@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="max-width:1280px;margin:0 auto;padding:148px 24px clamp(72px,10vw,120px)">
+  <nav aria-label="Breadcrumb" style="font-size:14px;color:#77736C">
+    <ol style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px">
+      <li><a href="#/" style="color:#77736C">Home</a></li>
+      <li aria-hidden="true">/</li>
+      <li><a href="#/shop" style="color:#77736C">Shop</a></li>
+      <li aria-hidden="true">/</li>
+      <li><a href="{{ catHref }}" style="color:#77736C">{{ cat }}</a></li>
+      <li aria-hidden="true">/</li>
+      <li aria-current="page" style="color:#2B2A28">{{ name }}</li>
+    </ol>
+  </nav>
+
+  <div data-fly="" style="display:flex;flex-wrap:wrap;gap:clamp(32px,5vw,64px);align-items:flex-start;margin-top:24px">
+    <div style="flex:1.2 1 440px;min-width:0;display:flex;flex-direction:column;gap:12px">
+      <div style="position:relative">
+        <button ref="{{ imgBtnRef }}" onClick="{{ openLb }}" aria-label="View image {{ idxLabel }} fullscreen" style="display:block;width:100%;padding:0;border:0;background:#EFE6DF;border-radius:20px;overflow:hidden;position:relative;aspect-ratio:4/5;cursor:zoom-in">
+          <sc-for list="{{ gallery }}" as="g" hint-placeholder-count="1">
+            <img src="{{ g.src }}" alt="{{ g.alt }}" width="1122" height="1402" loading="{{ g.loading }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:{{ g.op }};transition:opacity .4s ease">
+          </sc-for>
+        </button>
+        <div role="group" aria-label="Image view" style="position:absolute;top:14px;left:14px;display:flex;padding:4px;gap:4px;background:rgba(255,255,255,.92);border-radius:999px">
+          <button onClick="{{ showAssembled }}" aria-pressed="{{ assembledOn }}" style="height:44px;padding:0 16px;border-radius:999px;border:0;background:{{ aBg }};color:{{ aColor }};font-size:14px;font-weight:500;cursor:pointer;transition:background .25s,color .25s">Assembled</button>
+          <button onClick="{{ showExploded }}" aria-pressed="{{ explodedOn }}" style="height:44px;padding:0 16px;border-radius:999px;border:0;background:{{ eBg }};color:{{ eColor }};font-size:14px;font-weight:500;cursor:pointer;transition:background .25s,color .25s">Exploded</button>
+        </div>
+      </div>
+      <div role="group" aria-label="Product images" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+        <sc-for list="{{ gallery }}" as="g" hint-placeholder-count="2">
+          <button onClick="{{ g.select }}" aria-label="Show image {{ g.n }}" aria-current="{{ g.current }}" style="padding:0;border-radius:14px;overflow:hidden;border:2px solid {{ g.border }};background:#EFE6DF;aspect-ratio:1/1;cursor:pointer;transition:border-color .25s">
+            <img src="{{ g.src }}" alt="" width="200" height="200" loading="lazy" style="display:block;width:100%;height:100%;object-fit:cover">
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="flex:1 1 360px;min-width:0;position:sticky;top:112px;display:flex;flex-direction:column;gap:20px">
+      <a href="{{ catHref }}" style="align-self:flex-start;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#77736C;padding:4px 0">{{ cat }}</a>
+      <h1 style="margin:-12px 0 0;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(40px,4.6vw,64px);line-height:1">{{ name }}</h1>
+      <a href="{{ selfHref }}" onClick="{{ toReviews }}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:8px;font-size:14px;min-height:32px;text-decoration:underline;text-underline-offset:3px">
+        <span aria-hidden="true" style="display:flex;gap:2px">
+          <sc-for list="{{ stars }}" as="s" hint-placeholder-count="5">
+            <svg width="14" height="14" viewBox="0 0 24 24" style="fill:#2B2A28"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.5L12 17.3l-5.9 3.2 1.3-6.5-4.9-4.6 6.6-.8z"></path></svg>
+          </sc-for>
+        </span>
+        4.8 · 2,100+ reviews
+      </a>
+      <p style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:32px;letter-spacing:-0.02em;line-height:1">{{ priceText }}</p>
+      <p style="margin:0;color:#77736C;font-size:18px;max-width:36ch">{{ desc }}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <span style="display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;background:#fff;border:1px solid #DDD6CB;font-size:14px"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Assembly {{ time }}</span>
+        <span style="display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;background:#fff;border:1px solid #DDD6CB;font-size:14px"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"></path><path d="M3 3l18 18"></path></svg>0 tools</span>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <span id="pd-qty-label" style="font-size:14px;font-weight:500">Quantity</span>
+        <div role="group" aria-labelledby="pd-qty-label" style="display:flex;align-items:center;border:1px solid #DDD6CB;border-radius:999px;background:#fff">
+          <button onClick="{{ dec }}" disabled="{{ atMin }}" aria-label="Decrease quantity" style="width:44px;height:44px;border:0;background:none;color:#2B2A28;display:grid;place-items:center;cursor:pointer;opacity:{{ decOp }}"><svg width="16" height="16" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round"><path d="M5 12h14"></path></svg></button>
+          <span aria-live="polite" style="min-width:28px;text-align:center;font-weight:500">{{ qty }}</span>
+          <button onClick="{{ inc }}" disabled="{{ atMax }}" aria-label="Increase quantity" style="width:44px;height:44px;border:0;background:none;color:#2B2A28;display:grid;place-items:center;cursor:pointer;opacity:{{ incOp }}"><svg width="16" height="16" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round"><path d="M12 5v14M5 12h14"></path></svg></button>
+        </div>
+      </div>
+      <button ref="{{ mainBtnRef }}" onClick="{{ add }}" style="height:56px;width:100%;border-radius:999px;border:0;background:#2B2A28;color:#fff;font-size:16px;font-weight:500;cursor:pointer;transition:transform .35s cubic-bezier(.22,1.2,.36,1)" style-hover="transform:translateY(-2px)">Add to cart · {{ lineText }}</button>
+      <ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:#77736C">
+        <li style="display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M1 4h14v12H1z"></path><path d="M15 9h4l3 3v4h-7z"></path><circle cx="5.5" cy="18.5" r="2"></circle><circle cx="18.5" cy="18.5" r="2"></circle></svg>Free shipping</li>
+        <li style="display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>100 night trial</li>
+        <li style="display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>10 year warranty</li>
+      </ul>
+      <div style="background:#EDE7DD;border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+          <span style="font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#77736C">Part of a bundle</span>
+          <span style="padding:5px 12px;border-radius:999px;background:#E3CFA8;font-size:13px;font-weight:500">Save {{ bSave }}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="display:flex">
+            <sc-for list="{{ bThumbs }}" as="t" hint-placeholder-count="2">
+              <img src="{{ t.src }}" alt="" width="48" height="48" loading="lazy" style="width:48px;height:48px;border-radius:12px;object-fit:cover;border:2px solid #EDE7DD;margin-right:-10px;background:#fff">
+            </sc-for>
+          </div>
+          <div style="flex:1;min-width:0;padding-left:12px">
+            <p style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:18px">{{ bName }}</p>
+            <p style="margin:0;color:#77736C;font-size:13px">{{ bLabel }}</p>
+          </div>
+          <div style="text-align:right;white-space:nowrap">
+            <s style="display:block;color:#77736C;font-size:13px">{{ bOld }}</s>
+            <span style="font-weight:500">{{ bPrice }}</span>
+          </div>
+        </div>
+        <button onClick="{{ addBundle }}" style="height:44px;border-radius:999px;border:1px solid #2B2A28;background:transparent;color:#2B2A28;font-size:14px;font-weight:500;cursor:pointer" style-hover="background:#2B2A28;color:#fff">Add bundle</button>
+      </div>
+    </div>
+  </div>
+
+  <section aria-label="Product details" style="margin-top:clamp(72px,9vw,112px)">
+    <div role="tablist" aria-label="Product details" onKeyDown="{{ tabKey }}" style="display:flex;gap:4px;border-bottom:1px solid #DDD6CB;overflow-x:auto;scrollbar-width:none">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="4">
+        <button role="tab" id="{{ t.tid }}" data-tab="{{ t.i }}" aria-selected="{{ t.sel }}" aria-controls="{{ t.pid }}" tabIndex="{{ t.tab }}" onClick="{{ t.pick }}" style="flex:none;height:52px;padding:0 18px;border:0;border-bottom:2px solid {{ t.line }};margin-bottom:-1px;background:none;color:{{ t.color }};font-size:16px;font-weight:500;cursor:pointer;transition:color .2s,border-color .2s">{{ t.label }}</button>
+      </sc-for>
+    </div>
+    <div style="padding-top:32px">
+      <sc-if value="{{ tab0 }}" hint-placeholder-val="{{ true }}">
+        <div role="tabpanel" id="pd-p0" aria-labelledby="pd-t0" tabIndex="0" style="max-width:760px">
+          <dl style="margin:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr)">
+            <sc-for list="{{ specs }}" as="r" hint-placeholder-count="6">
+              <dt style="padding:16px 0;border-bottom:1px solid #DDD6CB;color:#77736C">{{ r.k }}</dt>
+              <dd style="margin:0;padding:16px 0;border-bottom:1px solid #DDD6CB">{{ r.v }}</dd>
+            </sc-for>
+          </dl>
+        </div>
+      </sc-if>
+      <sc-if value="{{ tab1 }}" hint-placeholder-val="{{ false }}">
+        <div role="tabpanel" id="pd-p1" aria-labelledby="pd-t1" tabIndex="0" style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+          <ul style="flex:1 1 320px;list-style:none;margin:0;padding:0;border-top:1px solid #DDD6CB">
+            <sc-for list="{{ box }}" as="b" hint-placeholder-count="4">
+              <li style="display:flex;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid #DDD6CB"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:#2B2A28;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12l5 5L20 7"></path></svg>{{ b.t }}</li>
+            </sc-for>
+          </ul>
+          <div style="flex:1 1 280px;background:#EDE7DD;border-radius:20px;padding:24px">
+            <p style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:22px;letter-spacing:-0.01em">One box, fits through any door</p>
+            <p style="margin:8px 0 0;color:#77736C">Ships flat. Every piece is FSC certified Baltic birch plywood.</p>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ tab2 }}" hint-placeholder-val="{{ false }}">
+        <div role="tabpanel" id="pd-p2" aria-labelledby="pd-t2" tabIndex="0">
+          <ol style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:24px">
+            <li style="background:#fff;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px">
+              <svg viewBox="0 0 200 150" width="200" height="150" role="img" aria-label="A half-open flat box with plywood panels inside" style="fill:none;stroke:#2B2A28;stroke-width:2;stroke-linejoin:round;stroke-linecap:round"><path d="M40 70 L100 42 L160 70"></path><path d="M100 42 L118 22 L178 50 L160 70"></path><path d="M64 76 L64 30 L114 53 L114 99 Z" style="fill:#E3CFA8"></path><path d="M84 70 L84 22 L134 45 L134 93 Z" style="fill:#E3CFA8"></path><path d="M40 70 L100 98 L100 132 L40 104 Z" style="fill:#F3EFE8"></path><path d="M100 98 L160 70 L160 104 L100 132 Z" style="fill:#F3EFE8"></path><path d="M40 70 L18 50 L78 22 L100 42"></path></svg>
+              <div><span style="font-family:'Inter Tight',sans-serif;font-weight:600;font-size:40px;line-height:1;color:transparent;-webkit-text-stroke:1.5px #C9B48C">01</span>
+              <h3 style="margin:8px 0 6px;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:22px">Unbox</h3>
+              <p style="margin:0;color:#77736C">{{ step1 }}</p></div>
+            </li>
+            <li style="background:#fff;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px">
+              <svg viewBox="0 0 200 150" width="200" height="150" role="img" aria-label="A tenon lined up with its matching numbered slot" style="fill:none;stroke:#2B2A28;stroke-width:2;stroke-linejoin:round;stroke-linecap:round"><path d="M130 18 L170 38 L170 128 L130 108 Z" style="fill:#E3CFA8"></path><path d="M144 62 L154 67 L154 87 L144 82 Z" style="fill:#F3EFE8"></path><path d="M14 74 L74 102 L96 91 L36 63 Z" style="fill:#E3CFA8"></path><path d="M14 74 L14 82 L74 110 L74 102"></path><path d="M74 110 L96 99 L96 91"></path><path d="M80 92 L90 87 L110 96 L100 101 Z" style="fill:#E3CFA8"></path><path d="M114 92 L138 78" style="stroke-dasharray:3 5"></path><text x="44" y="94" style="fill:#2B2A28;stroke:none;font-family:'Inter Tight',sans-serif;font-size:13px;font-weight:600">2</text><text x="146" y="56" style="fill:#2B2A28;stroke:none;font-family:'Inter Tight',sans-serif;font-size:13px;font-weight:600">2</text></svg>
+              <div><span style="font-family:'Inter Tight',sans-serif;font-weight:600;font-size:40px;line-height:1;color:transparent;-webkit-text-stroke:1.5px #C9B48C">02</span>
+              <h3 style="margin:8px 0 6px;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:22px">Slot</h3>
+              <p style="margin:0;color:#77736C">{{ step2 }}</p></div>
+            </li>
+            <li style="background:#fff;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px">
+              <svg viewBox="0 0 200 150" width="200" height="150" role="img" aria-label="The assembled piece with a lock pin clicked in place" style="fill:none;stroke:#2B2A28;stroke-width:2;stroke-linejoin:round;stroke-linecap:round"><path d="M40 66 L84 46 L84 90 L40 110 Z" style="fill:#E3CFA8"></path><path d="M24 60 L104 94 L164 66 L84 32 Z" style="fill:#E3CFA8"></path><path d="M24 60 L24 67 L104 101 L104 94"></path><path d="M104 101 L164 73 L164 66"></path><path d="M108 102 L156 80 L156 124 L108 146 Z" style="fill:#E3CFA8"></path><path d="M146 88 L152 85 L152 99 L146 102 Z" style="fill:#F3EFE8"></path><path d="M162 82 L172 77"></path><path d="M164 92 L176 92"></path><path d="M162 102 L172 107"></path></svg>
+              <div><span style="font-family:'Inter Tight',sans-serif;font-weight:600;font-size:40px;line-height:1;color:transparent;-webkit-text-stroke:1.5px #C9B48C">03</span>
+              <h3 style="margin:8px 0 6px;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:22px">Done</h3>
+              <p style="margin:0;color:#77736C">{{ step3 }}</p></div>
+            </li>
+          </ol>
+        </div>
+      </sc-if>
+      <sc-if value="{{ tab3 }}" hint-placeholder-val="{{ false }}">
+        <div role="tabpanel" id="pd-p3" aria-labelledby="pd-t3" tabIndex="0" style="max-width:760px">
+          <ul style="list-style:none;margin:0;padding:0;border-top:1px solid #DDD6CB">
+            <li style="padding:16px 0;border-bottom:1px solid #DDD6CB">Wipe with a damp cloth. Dry right after.</li>
+            <li style="padding:16px 0;border-bottom:1px solid #DDD6CB">Avoid standing water and wet glasses without a coaster.</li>
+            <li style="padding:16px 0;border-bottom:1px solid #DDD6CB">Re-tighten nothing: there is nothing to tighten.</li>
+          </ul>
+        </div>
+      </sc-if>
+    </div>
+  </section>
+
+  <section id="reviews" ref="{{ reviewsRef }}" aria-labelledby="pd-rev" style="margin-top:clamp(72px,9vw,112px)">
+    <h2 id="pd-rev" style="margin:0 0 32px;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(32px,4vw,52px);line-height:1.02">Reviews</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:stretch">
+      <div style="flex:1 1 300px;background:#fff;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:20px">
+        <div style="display:flex;align-items:center;gap:16px">
+          <span style="font-family:'Inter Tight',sans-serif;font-weight:500;font-size:56px;letter-spacing:-0.02em;line-height:1">4.8</span>
+          <div>
+            <span role="img" aria-label="4.8 out of 5 stars" style="display:flex;gap:2px">
+              <sc-for list="{{ stars }}" as="s" hint-placeholder-count="5">
+                <svg width="16" height="16" viewBox="0 0 24 24" style="fill:#2B2A28"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.5L12 17.3l-5.9 3.2 1.3-6.5-4.9-4.6 6.6-.8z"></path></svg>
+              </sc-for>
+            </span>
+            <span style="font-size:14px;color:#77736C">2,100+ reviews</span>
+          </div>
+        </div>
+        <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ dist }}" as="d" hint-placeholder-count="5">
+            <li style="display:grid;grid-template-columns:52px minmax(0,1fr) 40px;align-items:center;gap:12px;font-size:14px">
+              <span>{{ d.label }}</span>
+              <span aria-hidden="true" style="height:8px;border-radius:999px;background:#EDE7DD;overflow:hidden"><span style="display:block;height:100%;width:{{ d.w }};background:#2B2A28;border-radius:999px"></span></span>
+              <span style="text-align:right;color:#77736C">{{ d.pct }}</span>
+            </li>
+          </sc-for>
+        </ul>
+      </div>
+      <sc-for list="{{ reviews }}" as="r" hint-placeholder-count="3">
+        <figure style="margin:0;flex:1 1 240px;background:#fff;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:20px">
+          <span role="img" aria-label="5 out of 5 stars" style="display:flex;gap:2px">
+            <sc-for list="{{ stars }}" as="s" hint-placeholder-count="5">
+              <svg width="14" height="14" viewBox="0 0 24 24" style="fill:#2B2A28"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.5L12 17.3l-5.9 3.2 1.3-6.5-4.9-4.6 6.6-.8z"></path></svg>
+            </sc-for>
+          </span>
+          <blockquote style="margin:0;font-size:17px;line-height:1.45;text-wrap:pretty;flex:1">“{{ r.q }}”</blockquote>
+          <figcaption style="display:flex;align-items:center;gap:12px">
+            <span aria-hidden="true" style="width:40px;height:40px;border-radius:999px;background:#E3CFA8;display:grid;place-items:center;font-size:13px;font-weight:500">{{ r.i }}</span>
+            <span style="display:flex;flex-direction:column;font-size:14px;line-height:1.3"><span style="font-weight:500">{{ r.n }}</span><span style="color:#77736C">{{ r.c }}</span></span>
+          </figcaption>
+        </figure>
+      </sc-for>
+    </div>
+    <p style="margin:16px 0 0;color:#77736C;font-size:12px">Concept project. Reviews are illustrative.</p>
+  </section>
+
+  <section aria-labelledby="pd-pairs" style="margin-top:clamp(72px,9vw,112px)">
+    <h2 id="pd-pairs" style="margin:0 0 32px;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(32px,4vw,52px);line-height:1.02">Pairs well with</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:20px">
+      <sc-for list="{{ pairs }}" as="o" hint-placeholder-count="3">
+        <a href="{{ o.href }}" style="display:flex;flex-direction:column;background:#fff;border-radius:20px;overflow:hidden;color:#2B2A28;transition:transform .35s cubic-bezier(.22,1.2,.36,1)" style-hover="transform:translateY(-3px);color:#2B2A28">
+          <img src="{{ o.img }}" alt="{{ o.alt }}" width="600" height="600" loading="lazy" style="display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:#EFE6DF">
+          <span style="display:flex;justify-content:space-between;gap:8px;padding:14px 16px;font-size:15px"><span style="font-weight:500">{{ o.name }}</span><span style="color:#77736C">{{ o.price }}</span></span>
+        </a>
+      </sc-for>
+    </div>
+  </section>
+
+  <sc-if value="{{ showBar }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;left:0;right:0;bottom:0;z-index:45;background:#fff;border-top:1px solid #DDD6CB;padding:12px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 -12px 24px -16px rgba(43,42,40,.25)">
+      <div style="flex:1;min-width:0;line-height:1.3">
+        <p style="margin:0;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ name }}</p>
+        <p style="margin:0;color:#77736C;font-size:14px">{{ priceText }}</p>
+      </div>
+      <button onClick="{{ add }}" style="height:48px;padding:0 22px;border-radius:999px;border:0;background:#2B2A28;color:#fff;font-size:15px;font-weight:500;cursor:pointer">Add to cart</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ lb }}" hint-placeholder-val="{{ false }}">
+    <div ref="{{ lbRef }}" role="dialog" aria-modal="true" aria-label="{{ lbLabel }}" onKeyDown="{{ lbKey }}" style="position:fixed;inset:0;z-index:110;background:rgba(43,42,40,.95);display:flex;align-items:center;justify-content:center;padding:72px 16px">
+      <img src="{{ lbSrc }}" alt="{{ lbAlt }}" style="max-width:100%;max-height:100%;object-fit:contain;border-radius:16px">
+      <button data-close="" onClick="{{ closeLb }}" aria-label="Close" style="position:absolute;top:16px;right:16px;width:48px;height:48px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;display:grid;place-items:center;cursor:pointer;outline-color:#fff"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+      <button onClick="{{ lbPrev }}" aria-label="Previous image" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:999px;border:0;background:#fff;color:#2B2A28;display:grid;place-items:center;cursor:pointer;outline-color:#fff"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+      <button onClick="{{ lbNext }}" aria-label="Next image" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:999px;border:0;background:#fff;color:#2B2A28;display:grid;place-items:center;cursor:pointer;outline-color:#fff"><svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M9 6l6 6-6 6"></path></svg></button>
+      <span style="position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:#fff;font-size:14px">{{ idxLabel }}</span>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;k&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;pid&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desk&quot;,&quot;shelf&quot;,&quot;table&quot;,&quot;bench&quot;],&quot;default&quot;:&quot;desk&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { idx: 0, qty: 1, tab: 0, lb: false, bar: false };
+  mainBtnRef = React.createRef(); imgBtnRef = React.createRef(); lbRef = React.createRef(); reviewsRef = React.createRef();
+  componentDidMount() {
+    this.io = new IntersectionObserver(([e]) => this.setState({ bar: !e.isIntersecting && e.boundingClientRect.top < 0 }));
+    this.watchBtn();
+  }
+  watchBtn() { const b = this.mainBtnRef.current; if (b && b !== this.watched) { this.io.disconnect(); this.io.observe(b); this.watched = b; } }
+  componentWillUnmount() { this.io && this.io.disconnect(); }
+  componentDidUpdate() {
+    this.watchBtn();
+    const pid = this.props.pid, lb = this.state.lb, ppid = this._pid, plb = !!this._lb;
+    this._pid = pid; this._lb = lb;
+    if (ppid !== undefined && ppid !== pid) this.setState({ idx: 0, qty: 1, tab: 0, lb: false });
+    if (lb && !plb) setTimeout(() => this.lbRef.current?.querySelector('[data-close]')?.focus(), 30);
+    if (!lb && plb) this.imgBtnRef.current?.focus();
+  }
+  trap(e, el) {
+    if (e.key !== 'Tab' || !el) return;
+    const f = [...el.querySelectorAll('button')]; if (!f.length) return;
+    const a = f[0], z = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
+    else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+  }
+  renderVals() {
+    const k = this.props.k, p = k && k.byId(this.props.pid);
+    if (!p) return {};
+    const s = this.state, n = p.images.length, idx = Math.min(s.idx, n - 1);
+    const gallery = p.images.map((src, i) => ({
+      src: './assets/' + src, alt: p.imgAlts[i], op: i === idx ? 1 : 0, loading: i === 0 ? 'eager' : 'lazy', n: i + 1,
+      current: i === idx ? 'true' : undefined, border: i === idx ? '#2B2A28' : 'transparent', select: () => this.setState({ idx: i })
+    }));
+    const b = k.B.find(x => x.items.includes(p.id));
+    const catL = p.cat.toLowerCase();
+    const tabs = ['Specs', "What's in the box", 'Assembly', 'Care'].map((label, i) => ({
+      label, i, tid: 'pd-t' + i, pid: 'pd-p' + i, sel: s.tab === i ? 'true' : 'false', tab: s.tab === i ? 0 : -1,
+      line: s.tab === i ? '#2B2A28' : 'transparent', color: s.tab === i ? '#2B2A28' : '#77736C', pick: () => this.setState({ tab: i })
+    }));
+    const dist = [[5, 86], [4, 10], [3, 3], [2, 1], [1, 0]].map(([st, pc]) => ({ label: st + ' stars', w: pc + '%', pct: pc + '%' }));
+    const add = () => k.addItem(p.id, s.qty, this.imgBtnRef.current, true);
+    return {
+      name: p.name, cat: p.cat, catHref: '#/shop/' + catL, selfHref: '#/product/' + p.id, priceText: k.money(p.price), desc: p.desc, time: p.time,
+      gallery, imgBtnRef: this.imgBtnRef, mainBtnRef: this.mainBtnRef, lbRef: this.lbRef, reviewsRef: this.reviewsRef,
+      idxLabel: `${idx + 1} of ${n}`,
+      assembledOn: idx === 0 ? 'true' : 'false', explodedOn: idx === 1 ? 'true' : 'false',
+      aBg: idx === 0 ? '#2B2A28' : 'transparent', aColor: idx === 0 ? '#fff' : '#2B2A28',
+      eBg: idx === 1 ? '#2B2A28' : 'transparent', eColor: idx === 1 ? '#fff' : '#2B2A28',
+      showAssembled: () => this.setState({ idx: 0 }), showExploded: () => this.setState({ idx: 1 }),
+      stars: [1, 2, 3, 4, 5],
+      toReviews: e => { e.preventDefault(); const el = this.reviewsRef.current; if (el) window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 100, behavior: k.reduced ? 'auto' : 'smooth' }); },
+      qty: s.qty, atMin: s.qty <= 1, atMax: s.qty >= 10, decOp: s.qty <= 1 ? 0.35 : 1, incOp: s.qty >= 10 ? 0.35 : 1,
+      dec: () => this.setState(st => ({ qty: Math.max(1, st.qty - 1) })), inc: () => this.setState(st => ({ qty: Math.min(10, st.qty + 1) })),
+      lineText: k.money(p.price * s.qty), add,
+      bName: b.name, bLabel: b.label, bOld: k.money(b.old), bPrice: k.money(b.price), bSave: k.money(b.old - b.price),
+      bThumbs: b.items.map(id => ({ src: `./assets/${id}-card.png` })), addBundle: e => k.addBundle(b.id, e.currentTarget),
+      tabs, tab0: s.tab === 0, tab1: s.tab === 1, tab2: s.tab === 2, tab3: s.tab === 3,
+      tabKey: e => {
+        const m = { ArrowRight: 1, ArrowLeft: -1 }; let t = null;
+        if (m[e.key]) t = (s.tab + m[e.key] + 4) % 4; if (e.key === 'Home') t = 0; if (e.key === 'End') t = 3;
+        if (t === null) return; e.preventDefault(); this.setState({ tab: t }, () => document.querySelector(`[data-tab="${t}"]`)?.focus());
+      },
+      specs: [
+        { k: 'Dimensions', v: p.dims }, { k: 'Dimensions (cm)', v: p.cm }, { k: 'Weight', v: p.weight }, { k: 'Load', v: p.load },
+        { k: 'Material', v: 'FSC certified Baltic birch plywood' }, { k: 'Finish', v: 'Water based matte finish' },
+        { k: 'Tools', v: '0' }, { k: 'Warranty', v: '10 years' }
+      ],
+      box: p.box.map(t => ({ t })), step1: p.steps[0], step2: p.steps[1], step3: p.steps[2],
+      dist, reviews: p.reviews,
+      pairs: k.P.filter(o => o.id !== p.id).map(o => ({ href: '#/product/' + o.id, img: `./assets/${o.id}-card.png`, alt: o.alt, name: o.name, price: k.money(o.price) })),
+      showBar: s.bar && k.vw < 768,
+      lb: s.lb, lbSrc: gallery[idx].src, lbAlt: gallery[idx].alt, lbLabel: `${p.name} image gallery`,
+      openLb: () => this.setState({ lb: true }), closeLb: () => this.setState({ lb: false }),
+      lbPrev: () => this.setState({ idx: (idx - 1 + n) % n }), lbNext: () => this.setState({ idx: (idx + 1) % n }),
+      lbKey: e => {
+        if (e.key === 'Escape') { e.stopPropagation(); this.setState({ lb: false }); }
+        else if (e.key === 'ArrowLeft') this.setState({ idx: (idx - 1 + n) % n });
+        else if (e.key === 'ArrowRight') this.setState({ idx: (idx + 1) % n });
+        else this.trap(e, this.lbRef.current);
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

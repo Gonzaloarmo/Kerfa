@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><style>@keyframes kspin{to{transform:rotate(360deg)}}</style></helmet>
+<div style="max-width:1280px;margin:0 auto;padding:24px 24px clamp(72px,10vw,120px);color:#2B2A28">
+  <div role="note" style="background:#E3CFA8;border-radius:16px;padding:14px 18px;font-size:14px;display:flex;gap:10px;align-items:flex-start">
+    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;margin-top:1px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path></svg>
+    <p style="margin:0">Demo checkout: no real payment will be made. Use card 4242 4242 4242 4242, any future date, any CVC.</p>
+  </div>
+
+  <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:80px 0;display:flex;flex-direction:column;align-items:flex-start;gap:20px">
+      <h1 style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(36px,5vw,64px);line-height:1">Your cart is empty.</h1>
+      <a href="#/shop" style="height:52px;padding:0 26px;border-radius:999px;background:#2B2A28;color:#fff;font-weight:500;display:inline-flex;align-items:center" style-hover="color:#fff">Shop the collection</a>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasItems }}" hint-placeholder-val="{{ true }}">
+  <h1 style="margin:32px 0 24px;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(36px,4.6vw,56px);line-height:1">Checkout</h1>
+  <div style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+
+    <aside aria-label="Order summary" style="flex:1 1 340px;min-width:0;order:{{ sumOrder }};position:{{ sumPos }};top:24px;background:#fff;border-radius:20px;padding:{{ sumPad }}">
+      <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleSum }}" aria-expanded="{{ sumOpenS }}" aria-controls="co-sum" style="width:100%;min-height:56px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 20px;border:0;background:none;color:#2B2A28;font-size:15px;font-weight:500;cursor:pointer">
+          <span style="display:flex;align-items:center;gap:8px">{{ sumLabel }}<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transform:rotate({{ sumRot }});transition:transform .3s"><path d="M6 9l6 6 6-6"></path></svg></span>
+          <span style="font-family:'Inter Tight',sans-serif;font-size:18px">{{ grandText }}</span>
+        </button>
+      </sc-if>
+      <div id="co-sum" style="display:{{ sumBodyDisplay }};padding:{{ sumBodyPad }};flex-direction:column;gap:18px">
+        <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px">
+          <sc-for list="{{ lines }}" as="l" hint-placeholder-count="2">
+            <li style="display:flex;align-items:center;gap:14px">
+              <span style="position:relative;flex:none">
+                <img src="{{ l.img }}" alt="" width="64" height="80" style="display:block;width:64px;height:80px;border-radius:12px;object-fit:cover;background:#EFE6DF">
+                <span aria-label="Quantity {{ l.qty }}" style="position:absolute;top:-6px;right:-6px;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#2B2A28;color:#fff;font-size:12px;font-weight:500;line-height:22px;text-align:center">{{ l.qty }}</span>
+              </span>
+              <span style="flex:1;min-width:0;font-weight:500;font-size:15px">{{ l.name }}</span>
+              <span style="font-size:15px">{{ l.total }}</span>
+            </li>
+          </sc-for>
+        </ul>
+        <div style="border-top:1px solid #DDD6CB;padding-top:16px">
+          <sc-if value="{{ promoOn }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px;min-height:44px"><span>Code <strong style="font-weight:600">CLICK10</strong> applied</span><button onClick="{{ removePromo }}" style="min-height:44px;border:0;background:none;color:#77736C;font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Remove</button></div>
+          </sc-if>
+          <sc-if value="{{ promoOff }}" hint-placeholder-val="{{ true }}">
+            <form onSubmit="{{ applyCode }}" style="display:flex;flex-direction:column;gap:6px">
+              <label for="co-code" style="font-size:14px;font-weight:500">Promo code</label>
+              <div style="display:flex;gap:8px">
+                <input id="co-code" value="{{ code }}" onChange="{{ setCode }}" autoComplete="off" aria-invalid="{{ codeInvalid }}" aria-describedby="{{ codeErrRef }}" style="flex:1;min-width:0;height:48px;padding:0 16px;border-radius:12px;border:1.5px solid {{ codeBorder }};background:#fff;font-family:inherit;font-size:16px;color:#2B2A28;text-transform:uppercase">
+                <button type="submit" style="height:48px;padding:0 18px;border-radius:12px;border:1px solid #2B2A28;background:transparent;color:#2B2A28;font-size:14px;font-weight:500;cursor:pointer">Apply</button>
+              </div>
+              <sc-if value="{{ hasCodeErr }}" hint-placeholder-val="{{ false }}">
+                <p id="co-code-err" style="margin:0;color:#B3412F;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>That code doesn't exist.</p>
+              </sc-if>
+            </form>
+          </sc-if>
+        </div>
+        <dl style="margin:0;display:flex;flex-direction:column;gap:8px;font-size:14px;border-top:1px solid #DDD6CB;padding-top:16px">
+          <div style="display:flex;justify-content:space-between"><dt>Subtotal</dt><dd style="margin:0">{{ subText }}</dd></div>
+          <sc-if value="{{ hasBundleDisc }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between"><dt>Bundle discount</dt><dd style="margin:0;color:#3F6B4E;font-weight:500">{{ bundleDiscText }}</dd></div></sc-if>
+          <sc-if value="{{ hasPromoDisc }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between"><dt>Promo CLICK10</dt><dd style="margin:0;color:#3F6B4E;font-weight:500">{{ promoDiscText }}</dd></div></sc-if>
+          <div style="display:flex;justify-content:space-between"><dt>Shipping</dt><dd style="margin:0">{{ shipText }}</dd></div>
+          <div style="display:flex;justify-content:space-between"><dt>Estimated tax (8%, demo)</dt><dd style="margin:0">{{ taxText }}</dd></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:12px;border-top:1px solid #DDD6CB;margin-top:4px"><dt style="font-weight:500;font-size:16px">Total</dt><dd style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:28px;letter-spacing:-0.01em">{{ grandText }}</dd></div>
+        </dl>
+      </div>
+    </aside>
+
+    <div style="flex:1.4 1 520px;min-width:0;display:flex;flex-direction:column;gap:16px">
+      <ol aria-label="Checkout progress" style="list-style:none;margin:0 0 8px;padding:0;display:flex;align-items:center;gap:10px;font-size:14px;flex-wrap:wrap">
+        <sc-for list="{{ progress }}" as="p" hint-placeholder-count="3">
+          <li aria-current="{{ p.current }}" style="display:flex;align-items:center;gap:10px">
+            <span style="display:flex;align-items:center;gap:8px;color:{{ p.color }};font-weight:500">
+              <span aria-hidden="true" style="width:26px;height:26px;border-radius:999px;border:1.5px solid {{ p.ring }};background:{{ p.bg }};color:{{ p.numColor }};display:grid;place-items:center;font-size:12px;transition:background .3s">{{ p.mark }}</span>{{ p.label }}<span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">{{ p.sr }}</span>
+            </span>
+            <sc-if value="{{ p.notLast }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="width:32px;height:1.5px;background:{{ p.line }}"></span></sc-if>
+          </li>
+        </sc-for>
+      </ol>
+
+      <section aria-labelledby="co-h1" style="background:#fff;border-radius:20px;padding:24px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <h2 id="co-h1" style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:22px;letter-spacing:-0.01em">1. Contact</h2>
+          <sc-if value="{{ s1.edit }}" hint-placeholder-val="{{ false }}"><button onClick="{{ s1.onEdit }}" aria-label="Edit contact" style="min-height:44px;padding:0 4px;border:0;background:none;color:#2B2A28;font-size:14px;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Edit</button></sc-if>
+        </div>
+        <sc-if value="{{ s1.edit }}" hint-placeholder-val="{{ false }}"><p style="margin:8px 0 0;color:#77736C;font-size:14px">{{ s1.summary }}</p></sc-if>
+        <div style="display:grid;grid-template-rows:{{ s1.rows }};transition:grid-template-rows .4s ease">
+          <div style="overflow:hidden;visibility:{{ s1.vis }};transition:visibility 0s linear {{ s1.delay }}">
+            <form onSubmit="{{ next1 }}" noValidate="" style="padding-top:20px;display:flex;flex-direction:column;gap:16px">
+              <dc-import name="Kerfa Field" f="{{ fEmail }}" hint-size="100%,80px"></dc-import>
+              <label style="display:flex;align-items:center;gap:10px;min-height:44px;font-size:14px;cursor:pointer"><input type="checkbox" checked="{{ news }}" onChange="{{ toggleNews }}" style="width:20px;height:20px;accent-color:#2B2A28">Email me about new pieces</label>
+              <button type="submit" style="align-self:flex-start;height:52px;padding:0 28px;border-radius:999px;border:0;background:#2B2A28;color:#fff;font-size:16px;font-weight:500;cursor:pointer">Continue</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="co-h2" style="background:#fff;border-radius:20px;padding:24px;opacity:{{ s2.op }}">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <h2 id="co-h2" style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:22px;letter-spacing:-0.01em">2. Shipping</h2>
+          <sc-if value="{{ s2.edit }}" hint-placeholder-val="{{ false }}"><button onClick="{{ s2.onEdit }}" aria-label="Edit shipping" style="min-height:44px;padding:0 4px;border:0;background:none;color:#2B2A28;font-size:14px;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Edit</button></sc-if>
+        </div>
+        <sc-if value="{{ s2.edit }}" hint-placeholder-val="{{ false }}"><p style="margin:8px 0 0;color:#77736C;font-size:14px">{{ s2.summary }}</p></sc-if>
+        <div style="display:grid;grid-template-rows:{{ s2.rows }};transition:grid-template-rows .4s ease">
+          <div style="overflow:hidden;visibility:{{ s2.vis }};transition:visibility 0s linear {{ s2.delay }}">
+            <form onSubmit="{{ next2 }}" noValidate="" style="padding-top:20px;display:flex;flex-direction:column;gap:20px">
+              <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+                <sc-for list="{{ shipFields }}" as="f" hint-placeholder-count="6">
+                  <div style="grid-column:span {{ f.span }}"><dc-import name="Kerfa Field" f="{{ f }}" hint-size="100%,80px"></dc-import></div>
+                </sc-for>
+              </div>
+              <fieldset style="border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:10px">
+                <legend style="font-size:14px;font-weight:500;margin-bottom:10px">Shipping method</legend>
+                <sc-for list="{{ methods }}" as="m" hint-placeholder-count="2">
+                  <label style="display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:16px;border:1.5px solid {{ m.border }};cursor:pointer;transition:border-color .25s">
+                    <input type="radio" name="ship" value="{{ m.id }}" checked="{{ m.checked }}" onChange="{{ m.pick }}" style="width:20px;height:20px;accent-color:#2B2A28;flex:none">
+                    <span style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-weight:500">{{ m.name }}</span><span style="color:#77736C;font-size:14px">{{ m.eta }}</span></span>
+                    <span style="font-weight:500;text-align:right">{{ m.price }}</span>
+                  </label>
+                </sc-for>
+              </fieldset>
+              <button type="submit" style="align-self:flex-start;height:52px;padding:0 28px;border-radius:999px;border:0;background:#2B2A28;color:#fff;font-size:16px;font-weight:500;cursor:pointer">Continue to payment</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="co-h3" style="background:#fff;border-radius:20px;padding:24px;opacity:{{ s3.op }}">
+        <h2 id="co-h3" style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:22px;letter-spacing:-0.01em">3. Payment</h2>
+        <div style="display:grid;grid-template-rows:{{ s3.rows }};transition:grid-template-rows .4s ease">
+          <div style="overflow:hidden;visibility:{{ s3.vis }};transition:visibility 0s linear {{ s3.delay }}">
+            <form onSubmit="{{ pay }}" noValidate="" style="padding-top:20px;display:flex;flex-direction:column;gap:20px">
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">
+                <button type="button" onClick="{{ express }}" style="height:48px;border-radius:12px;border:0;background:#2B2A28;color:#fff;font-size:15px;font-weight:600;cursor:pointer">Apple Pay</button>
+                <button type="button" onClick="{{ express }}" style="height:48px;border-radius:12px;border:1px solid #DDD6CB;background:#fff;color:#2B2A28;font-size:15px;font-weight:600;cursor:pointer">Google Pay</button>
+                <button type="button" onClick="{{ express }}" style="height:48px;border-radius:12px;border:0;background:#E3CFA8;color:#2B2A28;font-size:15px;font-weight:600;font-style:italic;cursor:pointer">PayPal</button>
+              </div>
+              <div aria-hidden="true" style="display:flex;align-items:center;gap:12px;color:#77736C;font-size:13px"><span style="flex:1;height:1px;background:#DDD6CB"></span>or pay with card<span style="flex:1;height:1px;background:#DDD6CB"></span></div>
+              <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+                <sc-for list="{{ payFields }}" as="f" hint-placeholder-count="4">
+                  <div style="grid-column:span {{ f.span }}"><dc-import name="Kerfa Field" f="{{ f }}" hint-size="100%,80px"></dc-import></div>
+                </sc-for>
+              </div>
+              <label style="display:flex;align-items:center;gap:10px;min-height:44px;font-size:14px;cursor:pointer"><input type="checkbox" checked="{{ same }}" onChange="{{ toggleSame }}" style="width:20px;height:20px;accent-color:#2B2A28">Billing address same as shipping</label>
+              <sc-if value="{{ showBilling }}" hint-placeholder-val="{{ false }}">
+                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+                  <sc-for list="{{ billFields }}" as="f" hint-placeholder-count="4">
+                    <div style="grid-column:span {{ f.span }}"><dc-import name="Kerfa Field" f="{{ f }}" hint-size="100%,80px"></dc-import></div>
+                  </sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ hasPayErr }}" hint-placeholder-val="{{ false }}">
+                <div role="alert" style="display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:12px;border:1.5px solid #B3412F;color:#B3412F;font-size:14px;font-weight:500"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>{{ payErr }}</div>
+              </sc-if>
+              <button type="submit" disabled="{{ payBusy }}" aria-live="polite" style="height:56px;border-radius:999px;border:0;background:{{ payBg }};color:#fff;font-size:16px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .3s ease,transform .35s cubic-bezier(.22,1.2,.36,1)">
+                <sc-if value="{{ payIdle }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg><span>{{ payLabel }}</span></sc-if>
+                <sc-if value="{{ payLoading }}" hint-placeholder-val="{{ false }}"><span aria-hidden="true" style="width:18px;height:18px;border-radius:999px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;animation:kspin .8s linear infinite"></span><span>Processing…</span></sc-if>
+                <sc-if value="{{ paySuccess }}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12l5 5L20 7"></path></svg><span>Paid</span></sc-if>
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;k&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;}}">
+class Component extends DCLogic {
+  STATES = 'AL Alabama|AK Alaska|AZ Arizona|AR Arkansas|CA California|CO Colorado|CT Connecticut|DE Delaware|DC District of Columbia|FL Florida|GA Georgia|HI Hawaii|ID Idaho|IL Illinois|IN Indiana|IA Iowa|KS Kansas|KY Kentucky|LA Louisiana|ME Maine|MD Maryland|MA Massachusetts|MI Michigan|MN Minnesota|MS Mississippi|MO Missouri|MT Montana|NE Nebraska|NV Nevada|NH New Hampshire|NJ New Jersey|NM New Mexico|NY New York|NC North Carolina|ND North Dakota|OH Ohio|OK Oklahoma|OR Oregon|PA Pennsylvania|RI Rhode Island|SC South Carolina|SD South Dakota|TN Tennessee|TX Texas|UT Utah|VT Vermont|VA Virginia|WA Washington|WV West Virginia|WI Wisconsin|WY Wyoming'.split('|').map(x => ({ v: x.slice(0, 2), l: x.slice(3) }));
+  state = {
+    step: 1, done: { 1: false, 2: false },
+    v: { email: '', first: '', last: '', address: '', apt: '', city: '', state: '', zip: '', phone: '', card: '', cname: '', exp: '', cvc: '', baddress: '', bcity: '', bstate: '', bzip: '' },
+    err: {}, dirty: {}, news: false, method: 'standard', same: true, pay: 'idle', payErr: '', sumOpen: false, code: '', codeErr: false
+  };
+  brand(d) { if (/^3[47]/.test(d)) return 'AMEX'; if (/^(5[1-5]|2[2-7])/.test(d)) return 'MC'; if (/^4/.test(d)) return 'VISA'; return ''; }
+  luhn(d) { let s = 0; for (let i = 0; i < d.length; i++) { let n = +d[d.length - 1 - i]; if (i % 2) { n *= 2; if (n > 9) n -= 9; } s += n; } return s % 10 === 0; }
+  check(key, val) {
+    const v = (val ?? '').trim(), req = m => (v ? '' : m);
+    switch (key) {
+      case 'email': return !v ? 'Enter your email.' : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? '' : 'Enter a valid email, like name@example.com.';
+      case 'first': return req('Enter your first name.');
+      case 'last': return req('Enter your last name.');
+      case 'address': case 'baddress': return req('Enter your street address.');
+      case 'city': case 'bcity': return req('Enter your city.');
+      case 'state': case 'bstate': return !v ? 'Select your state.' : (key === 'state' && (v === 'AK' || v === 'HI')) ? 'We ship to the continental US only.' : '';
+      case 'zip': case 'bzip': return /^\d{5}$/.test(v) ? '' : 'Enter a 5 digit ZIP code.';
+      case 'phone': return v.replace(/\D/g, '').length === 10 ? '' : 'Enter a 10 digit phone number.';
+      case 'card': { const d = v.replace(/\D/g, ''), need = this.brand(d) === 'AMEX' ? 15 : 16; return d.length === need && this.luhn(d) ? '' : 'Enter a valid card number.'; }
+      case 'cname': return req('Enter the name on the card.');
+      case 'exp': {
+        const m = v.match(/^(\d{2})\/(\d{2})$/); if (!m) return 'Enter the expiry as MM/YY.';
+        const mo = +m[1], yr = 2000 + +m[2], now = new Date();
+        if (mo < 1 || mo > 12) return 'Enter a valid month.';
+        if (yr < now.getFullYear() || (yr === now.getFullYear() && mo < now.getMonth() + 1)) return 'This card has expired.';
+        return '';
+      }
+      case 'cvc': return /^\d{3,4}$/.test(v) ? '' : 'Enter the 3 or 4 digit code.';
+      default: return '';
+    }
+  }
+  format(key, raw) {
+    const d = raw.replace(/\D/g, '');
+    if (key === 'card') { const amex = this.brand(d) === 'AMEX', x = d.slice(0, amex ? 15 : 16); return amex ? [x.slice(0, 4), x.slice(4, 10), x.slice(10)].filter(Boolean).join(' ') : x.replace(/(\d{4})(?=\d)/g, '$1 '); }
+    if (key === 'exp') { const x = d.slice(0, 4); return x.length > 2 ? x.slice(0, 2) + '/' + x.slice(2) : x; }
+    if (key === 'zip' || key === 'bzip') return d.slice(0, 5);
+    if (key === 'cvc') return d.slice(0, 4);
+    if (key === 'phone') { const x = d.slice(0, 10); if (x.length < 4) return x; if (x.length < 7) return `(${x.slice(0, 3)}) ${x.slice(3)}`; return `(${x.slice(0, 3)}) ${x.slice(3, 6)}-${x.slice(6)}`; }
+    return raw;
+  }
+  change(key, raw) {
+    const val = this.format(key, raw);
+    this.setState(s => ({ v: { ...s.v, [key]: val }, dirty: { ...s.dirty, [key]: true }, err: s.err[key] ? { ...s.err, [key]: this.check(key, val) } : s.err, payErr: key === 'card' ? '' : s.payErr }));
+  }
+  blur(key) { const s = this.state; if (s.dirty[key] || s.err[key]) this.setState(st => ({ err: { ...st.err, [key]: this.check(key, st.v[key]) } })); }
+  keys(step) { if (step === 1) return ['email']; if (step === 2) return ['first', 'last', 'address', 'city', 'state', 'zip', 'phone']; return ['card', 'cname', 'exp', 'cvc', ...(this.state.same ? [] : ['baddress', 'bcity', 'bstate', 'bzip'])]; }
+  validate(step) {
+    const ks = this.keys(step), err = { ...this.state.err }; let first = null;
+    ks.forEach(k => { err[k] = this.check(k, this.state.v[k]); if (err[k] && !first) first = k; });
+    this.setState({ err });
+    if (first) setTimeout(() => document.getElementById('co-' + first)?.focus(), 30);
+    return !first;
+  }
+  goStep(n) {
+    this.setState({ step: n }, () => setTimeout(() => {
+      const h = document.getElementById('co-h' + n); if (!h) return;
+      window.scrollTo({ top: h.getBoundingClientRect().top + scrollY - 24, behavior: this.props.k?.reduced ? 'auto' : 'smooth' });
+      h.closest('section')?.querySelector('input,select')?.focus({ preventScroll: true });
+    }, 420));
+  }
+  fld(key, label, o = {}) {
+    const s = this.state, narrow = (this.props.k?.vw ?? 1280) < 560;
+    return { id: 'co-' + key, name: key, label, value: s.v[key], err: s.err[key], onChange: e => this.change(key, e.target.value), onBlur: () => this.blur(key), ...o, span: narrow ? 2 : (o.span || 2) };
+  }
+  bizDays(from, n) { const d = new Date(from); let c = 0; while (c < n) { d.setDate(d.getDate() + 1); const w = d.getDay(); if (w && w !== 6) c++; } return d; }
+  submitPay(k, t) {
+    if (this.state.pay !== 'idle' || !this.validate(3)) return;
+    this.setState({ pay: 'loading', payErr: '' });
+    setTimeout(() => {
+      const s = this.state, d = s.v.card.replace(/\D/g, '');
+      if (d === '4000000000000002') { this.setState({ pay: 'idle', payErr: 'Your card was declined. Try another card.' }, () => document.getElementById('co-card')?.focus()); return; }
+      this.setState({ pay: 'success' });
+      setTimeout(() => {
+        const b = this.brand(d), m = s.method === 'express';
+        const id = k.placeOrder({
+          email: s.v.email.trim(), name: `${s.v.first} ${s.v.last}`.trim(),
+          address: [s.v.address + (s.v.apt ? ', ' + s.v.apt : ''), `${s.v.city}, ${s.v.state} ${s.v.zip}`],
+          method: s.method, methodLabel: m ? 'Express · 1 to 2 business days' : 'Standard · 3 to 7 business days',
+          payment: `${b === 'AMEX' ? 'Amex' : b === 'MC' ? 'Mastercard' : 'Visa'} •••• ${d.slice(-4)}`,
+          lines: k.items.map(i => { const p = k.byId(i.id); return { id: p.id, name: p.name, qty: i.qty, total: p.price * i.qty }; }),
+          totals: t, mins: Math.max(...k.items.map(i => k.byId(i.id).mins))
+        });
+        k.go('#/order/' + id);
+      }, 700);
+    }, 1800);
+  }
+  renderVals() {
+    const k = this.props.k; if (!k) return {};
+    const s = this.state, m = k.money, t = k.totals(s.method), narrow = k.vw < 900;
+    const placing = s.pay === 'success';
+    const sec = n => {
+      const open = s.step === n, done = n < s.step;
+      return { rows: open ? '1fr' : '0fr', vis: open ? 'visible' : 'hidden', delay: open ? '0s' : '.4s', edit: done, op: n > s.step ? 0.6 : 1, onEdit: () => this.goStep(n) };
+    };
+    const s1 = { ...sec(1), summary: s.v.email };
+    const s2 = { ...sec(2), summary: `${s.v.first} ${s.v.last}, ${s.v.address}${s.v.apt ? ' ' + s.v.apt : ''}, ${s.v.city}, ${s.v.state} ${s.v.zip} · ${s.method === 'express' ? 'Express' : 'Standard'}` };
+    const s3 = sec(3);
+    const labels = ['Contact', 'Shipping', 'Payment'];
+    const progress = labels.map((label, i) => {
+      const n = i + 1, done = n < s.step, cur = n === s.step;
+      return { label, mark: done ? '✓' : String(n), current: cur ? 'step' : undefined, sr: done ? ', completed' : cur ? ', current step' : '', color: done || cur ? '#2B2A28' : '#77736C', ring: done || cur ? '#2B2A28' : '#CFC6B8', bg: done ? '#2B2A28' : cur ? '#fff' : 'transparent', numColor: done ? '#fff' : '#2B2A28', notLast: n < 3, line: done ? '#2B2A28' : '#DDD6CB' };
+    });
+    const card = s.v.card.replace(/\D/g, '');
+    const brand = this.brand(card);
+    const expressPrice = t.merch >= 800 ? 'Free' : '$49';
+    return {
+      isEmpty: !k.items.length && !placing, hasItems: !!k.items.length || placing,
+      narrow, sumOrder: narrow ? -1 : 2, sumPos: narrow ? 'static' : 'sticky', sumPad: narrow ? '0' : '24px',
+      sumBodyDisplay: !narrow || s.sumOpen ? 'flex' : 'none', sumBodyPad: narrow ? '0 20px 20px' : '0',
+      sumOpenS: s.sumOpen ? 'true' : 'false', sumRot: s.sumOpen ? '180deg' : '0deg', sumLabel: s.sumOpen ? 'Hide order summary' : 'Show order summary',
+      toggleSum: () => this.setState({ sumOpen: !s.sumOpen }),
+      lines: k.items.map(i => { const p = k.byId(i.id); return { img: `./assets/${p.id}-card.png`, name: p.name, qty: i.qty, total: m(p.price * i.qty) }; }),
+      promoOn: !!k.promo, promoOff: !k.promo, removePromo: () => k.removePromo(), code: s.code,
+      setCode: e => this.setState({ code: e.target.value, codeErr: false }),
+      applyCode: e => { e.preventDefault(); if (k.applyPromo(s.code)) this.setState({ code: '', codeErr: false }); else this.setState({ codeErr: true }); },
+      hasCodeErr: s.codeErr, codeInvalid: s.codeErr ? 'true' : undefined, codeErrRef: s.codeErr ? 'co-code-err' : undefined, codeBorder: s.codeErr ? '#B3412F' : '#DDD6CB',
+      subText: m(t.sub), hasBundleDisc: t.bundleDisc > 0, bundleDiscText: '−' + m(t.bundleDisc), hasPromoDisc: t.promoDisc > 0, promoDiscText: '−' + m(t.promoDisc),
+      shipText: t.shipping ? m(t.shipping) : 'Free', taxText: m(t.tax), grandText: m(t.grand),
+      progress, s1, s2, s3,
+      fEmail: this.fld('email', 'Email', { type: 'email', ac: 'email', im: 'email', ph: 'you@example.com' }),
+      news: s.news, toggleNews: () => this.setState({ news: !s.news }),
+      next1: e => { e.preventDefault(); if (this.validate(1)) { this.setState({ done: { ...s.done, 1: true } }); this.goStep(Math.max(2, s.done[2] ? 3 : 2)); } },
+      shipFields: [
+        this.fld('first', 'First name', { ac: 'given-name', span: 1 }), this.fld('last', 'Last name', { ac: 'family-name', span: 1 }),
+        this.fld('address', 'Address', { ac: 'address-line1' }), this.fld('apt', 'Apartment, suite (optional)', { ac: 'address-line2', optional: true }),
+        this.fld('city', 'City', { ac: 'address-level2', span: 1 }), this.fld('state', 'State', { kind: 'select', ac: 'address-level1', options: this.STATES, ph: 'Select a state', span: 1 }),
+        this.fld('zip', 'ZIP code', { ac: 'postal-code', im: 'numeric', max: 5, span: 1 }), this.fld('phone', 'Phone', { type: 'tel', ac: 'tel', im: 'tel', span: 1, ph: '(555) 123-4567' })
+      ],
+      methods: [
+        { id: 'standard', name: 'Standard', eta: '3 to 7 business days', price: 'Free' },
+        { id: 'express', name: 'Express', eta: '1 to 2 business days · free over $800', price: expressPrice }
+      ].map(x => ({ ...x, checked: s.method === x.id, border: s.method === x.id ? '#2B2A28' : '#DDD6CB', pick: () => this.setState({ method: x.id }) })),
+      next2: e => { e.preventDefault(); if (this.validate(2)) { this.setState({ done: { ...s.done, 2: true } }); this.goStep(3); } },
+      express: () => k.toast('Demo: use the card form'),
+      payFields: [
+        this.fld('card', 'Card number', { ac: 'cc-number', im: 'numeric', ph: '1234 1234 1234 1234', brand, max: 19 }),
+        this.fld('cname', 'Name on card', { ac: 'cc-name' }),
+        this.fld('exp', 'Expiry (MM/YY)', { ac: 'cc-exp', im: 'numeric', ph: 'MM/YY', max: 5, span: 1 }),
+        this.fld('cvc', 'CVC', { ac: 'cc-csc', im: 'numeric', ph: '123', max: 4, span: 1 })
+      ],
+      same: s.same, toggleSame: () => this.setState({ same: !s.same }), showBilling: !s.same,
+      billFields: [
+        this.fld('baddress', 'Billing address', { ac: 'billing address-line1' }),
+        this.fld('bcity', 'City', { ac: 'billing address-level2', span: 1 }), this.fld('bstate', 'State', { kind: 'select', ac: 'billing address-level1', options: this.STATES, ph: 'Select a state', span: 1 }),
+        this.fld('bzip', 'ZIP code', { ac: 'billing postal-code', im: 'numeric', max: 5 })
+      ],
+      hasPayErr: !!s.payErr, payErr: s.payErr,
+      payIdle: s.pay === 'idle', payLoading: s.pay === 'loading', paySuccess: s.pay === 'success', payBusy: s.pay !== 'idle',
+      payBg: s.pay === 'success' ? '#3F6B4E' : '#2B2A28', payLabel: `Pay ${m(t.grand)}`,
+      pay: e => { e.preventDefault(); this.submitPay(k, t); }
+    };
+  }
+}
+</script>
+</body>
+</html>

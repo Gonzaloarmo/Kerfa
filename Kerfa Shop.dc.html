@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="max-width:1280px;margin:0 auto;padding:148px 24px clamp(72px,10vw,120px)">
+  <nav aria-label="Breadcrumb" style="font-size:14px;color:#77736C">
+    <ol style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px">
+      <li><a href="#/" style="color:#77736C">Home</a></li>
+      <li aria-hidden="true">/</li>
+      <sc-if value="{{ isAll }}" hint-placeholder-val="{{ true }}">
+        <li aria-current="page" style="color:#2B2A28">Shop</li>
+      </sc-if>
+      <sc-if value="{{ isCat }}" hint-placeholder-val="{{ false }}">
+        <li><a href="#/shop" style="color:#77736C">Shop</a></li>
+        <li aria-hidden="true">/</li>
+        <li aria-current="page" style="color:#2B2A28">{{ catName }}</li>
+      </sc-if>
+    </ol>
+  </nav>
+  <h1 style="margin:20px 0 12px;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(44px,6vw,88px);line-height:1">{{ title }}</h1>
+  <p style="margin:0;color:#77736C;font-size:18px;max-width:40ch">Four pieces. Zero tools. Built to move with you.</p>
+
+  <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;margin:48px 0 24px">
+    <nav aria-label="Categories" style="display:flex;flex-wrap:wrap;gap:8px">
+      <sc-for list="{{ pills }}" as="c" hint-placeholder-count="4">
+        <a href="{{ c.href }}" aria-current="{{ c.current }}" style="height:44px;padding:0 20px;border-radius:999px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }};font-size:14px;font-weight:500;display:inline-flex;align-items:center;transition:background .25s,color .25s">{{ c.label }}</a>
+      </sc-for>
+    </nav>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <span aria-live="polite" style="font-size:14px;color:#77736C">{{ countText }}</span>
+      <label for="shop-sort" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Sort by</label>
+      <div style="position:relative">
+        <select id="shop-sort" value="{{ sort }}" onChange="{{ setSort }}" style="height:44px;padding:0 44px 0 18px;border-radius:999px;border:1px solid #DDD6CB;background:#fff;color:#2B2A28;font-family:inherit;font-size:14px;font-weight:500;appearance:none;-webkit-appearance:none;cursor:pointer">
+          <option value="featured">Featured</option>
+          <option value="low">Price low to high</option>
+          <option value="high">Price high to low</option>
+          <option value="fast">Fastest assembly</option>
+        </select>
+        <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="position:absolute;right:16px;top:14px;pointer-events:none;fill:none;stroke:#2B2A28;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9l6 6 6-6"></path></svg>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:{{ cols }};gap:24px">
+    <sc-for list="{{ list }}" as="it" hint-placeholder-count="3">
+      <dc-import name="Kerfa Card" k="{{ k }}" pid="{{ it.id }}" hint-size="100%,560px"></dc-import>
+    </sc-for>
+  </div>
+
+  <section aria-labelledby="shop-bundles" style="margin-top:72px;background:#E3CFA8;border-radius:24px;padding:clamp(32px,5vw,56px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px">
+    <h2 id="shop-bundles" style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(30px,3.6vw,48px);line-height:1.05;max-width:16ch">Build your room, save 15%</h2>
+    <a href="#/bundles" style="height:52px;padding:0 28px;border-radius:999px;background:#2B2A28;color:#fff;font-weight:500;display:inline-flex;align-items:center;transition:transform .35s cubic-bezier(.22,1.2,.36,1)" style-hover="transform:translateY(-2px) scale(1.02);color:#fff">See bundles</a>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;k&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;cat&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;all&quot;,&quot;work&quot;,&quot;living&quot;,&quot;storage&quot;],&quot;default&quot;:&quot;all&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { sort: 'featured' };
+  renderVals() {
+    const k = this.props.k; if (!k) return {};
+    const cat = this.props.cat || 'all', names = { work: 'Work', living: 'Living', storage: 'Storage' };
+    let list = k.P.filter(p => cat === 'all' || p.cat.toLowerCase() === cat);
+    const s = this.state.sort;
+    if (s === 'low') list = [...list].sort((a, b) => a.price - b.price);
+    if (s === 'high') list = [...list].sort((a, b) => b.price - a.price);
+    if (s === 'fast') list = [...list].sort((a, b) => a.mins - b.mins);
+    const pills = [['all', 'All', '#/shop'], ['work', 'Work', '#/shop/work'], ['living', 'Living', '#/shop/living'], ['storage', 'Storage', '#/shop/storage']].map(([id, label, href]) => {
+      const on = id === cat;
+      return { label, href, current: on ? 'page' : undefined, bg: on ? '#2B2A28' : 'transparent', color: on ? '#fff' : '#2B2A28', border: on ? '#2B2A28' : '#DDD6CB' };
+    });
+    const vw = k.vw;
+    return {
+      k, isAll: cat === 'all', isCat: cat !== 'all', catName: names[cat], title: cat === 'all' ? 'The collection' : names[cat],
+      pills, list, sort: s, setSort: e => this.setState({ sort: e.target.value }),
+      countText: `${list.length} ${list.length === 1 ? 'product' : 'products'}`,
+      cols: vw >= 1024 ? 'repeat(3,minmax(0,1fr))' : vw >= 640 ? 'repeat(2,minmax(0,1fr))' : 'minmax(0,1fr)'
+    };
+  }
+}
+</script>
+</body>
+</html>

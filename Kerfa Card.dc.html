@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<article data-card="{{ id }}" data-fly="" tabIndex="0" aria-label="{{ aria }}" onClick="{{ open }}" onKeyDown="{{ key }}" onMouseEnter="{{ enter }}" onMouseLeave="{{ leave }}" onFocus="{{ enter }}" onBlur="{{ leave }}" style="height:100%;display:flex;flex-direction:column;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 2px rgba(43,42,40,.06);cursor:pointer;text-align:left;color:#2B2A28">
+  <div style="position:relative;aspect-ratio:4/5;overflow:hidden;background:#EFE6DF">
+    <img src="{{ img }}" alt="{{ alt }}" width="1122" height="1402" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale({{ scale }});transition:transform .4s ease">
+    <img src="{{ exp }}" alt="{{ altExp }}" width="1122" height="1402" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:{{ expOp }};transform:scale({{ scale }});transition:opacity .4s ease,transform .4s ease">
+    <sc-if value="{{ badge }}" hint-placeholder-val="{{ false }}">
+      <span style="position:absolute;top:14px;left:14px;padding:6px 12px;border-radius:999px;background:#E3CFA8;color:#2B2A28;font-size:12px;font-weight:500">Bestseller</span>
+    </sc-if>
+    <button onClick="{{ add }}" aria-label="Quick add {{ name }} to cart" style="position:absolute;left:14px;right:14px;bottom:14px;height:44px;border-radius:999px;border:0;background:#2B2A28;color:#fff;font-size:14px;font-weight:500;cursor:pointer;transform:translateY({{ pillY }});opacity:{{ pillOp }};transition:transform .4s cubic-bezier(.22,1.2,.36,1),opacity .3s ease">Quick add</button>
+  </div>
+  <div style="flex:1;padding:18px 20px 20px;display:flex;flex-direction:column;gap:6px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+      <h3 style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:19px;letter-spacing:-0.01em">{{ name }}</h3>
+      <span style="font-weight:500">{{ priceText }}</span>
+    </div>
+    <p style="margin:0;color:#77736C;font-size:14px">{{ desc }}</p>
+    <div style="display:flex;gap:16px;margin-top:auto;padding-top:12px;border-top:1px solid #DDD6CB;font-size:13px;color:#2B2A28">
+      <span style="display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Assembly {{ time }}</span>
+      <span style="display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"></path><path d="M3 3l18 18"></path></svg>0 tools</span>
+    </div>
+  </div>
+</article>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:320,&quot;height&quot;:520},&quot;k&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;pid&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;desk&quot;,&quot;shelf&quot;,&quot;table&quot;,&quot;bench&quot;],&quot;default&quot;:&quot;desk&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { hov: false, touch: false };
+  componentDidMount() { this.setState({ touch: matchMedia('(hover: none)').matches }); }
+  renderVals() {
+    const k = this.props.k, p = k && k.byId(this.props.pid);
+    if (!p) return {};
+    const h = this.state.hov, show = h || this.state.touch, go = () => k.go('#/product/' + p.id);
+    return {
+      id: p.id, aria: `${p.name}, ${k.money(p.price)}`, img: `./assets/${p.id}-card.png`, exp: `./assets/${p.id}-exploded.png`,
+      alt: p.alt, altExp: p.name + ', exploded view of its parts', name: p.name, priceText: k.money(p.price), desc: p.desc, time: p.time, badge: !!p.badge,
+      expOp: h ? 1 : 0, scale: h ? 1.02 : 1, pillY: show ? '0' : '64px', pillOp: show ? 1 : 0,
+      enter: () => this.setState({ hov: true }), leave: () => this.setState({ hov: false }),
+      open: go, key: e => { if (e.key === 'Enter' && e.target === e.currentTarget) go(); },
+      add: e => { e.stopPropagation(); k.addItem(p.id, 1, e.currentTarget, true); }
+    };
+  }
+}
+</script>
+</body>
+</html>

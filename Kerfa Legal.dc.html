@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="max-width:1280px;margin:0 auto;padding:148px 24px clamp(72px,10vw,120px);color:#2B2A28">
+  <nav aria-label="Breadcrumb" style="font-size:14px;color:#77736C">
+    <ol style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px">
+      <li><a href="#/" style="color:#77736C">Home</a></li>
+      <li aria-hidden="true">/</li>
+      <li style="color:#77736C">Legal</li>
+      <li aria-hidden="true">/</li>
+      <li aria-current="page" style="color:#2B2A28">{{ title }}</li>
+    </ol>
+  </nav>
+  <div style="display:flex;flex-wrap:wrap;gap:clamp(32px,6vw,80px);align-items:flex-start;margin-top:32px">
+    <nav aria-label="Legal pages" style="flex:0 1 240px;min-width:200px;position:sticky;top:112px">
+      <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px">
+        <sc-for list="{{ pages }}" as="p" hint-placeholder-count="7">
+          <li><a href="{{ p.href }}" aria-current="{{ p.current }}" style="display:flex;align-items:center;min-height:44px;padding:0 14px;border-radius:12px;background:{{ p.bg }};font-size:15px;font-weight:{{ p.weight }};color:#2B2A28" style-hover="background:#EDE7DD;color:#2B2A28">{{ p.label }}</a></li>
+        </sc-for>
+      </ul>
+    </nav>
+    <article style="flex:1 1 520px;min-width:0;max-width:760px">
+      <h1 style="margin:0 0 12px;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(40px,5vw,72px);line-height:1;text-wrap:balance">{{ title }}</h1>
+      <p style="margin:0;color:#77736C;font-size:14px">Last updated: November 11, 2026</p>
+      <p role="note" style="margin:24px 0 40px;padding:14px 18px;border-radius:16px;background:#E3CFA8;font-size:14px">Kerfa is a concept project. This text is a realistic sample and has no legal value.</p>
+      <sc-for list="{{ sections }}" as="s" hint-placeholder-count="5">
+        <section style="padding:28px 0;border-top:1px solid #DDD6CB">
+          <h2 style="margin:0 0 12px;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:24px;letter-spacing:-0.01em">{{ s.h }}</h2>
+          <p style="margin:0;color:#4A4843;line-height:1.65;text-wrap:pretty">{{ s.p }}</p>
+          <sc-if value="{{ s.hasList }}" hint-placeholder-val="{{ false }}">
+            <ol style="margin:14px 0 0;padding-left:22px;color:#4A4843;line-height:1.65;display:flex;flex-direction:column;gap:6px">
+              <sc-for list="{{ s.list }}" as="li" hint-placeholder-count="4"><li>{{ li.t }}</li></sc-for>
+            </ol>
+          </sc-if>
+        </section>
+      </sc-for>
+      <sc-if value="{{ isCookies }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ openPrefs }}" style="margin-top:8px;height:52px;padding:0 28px;border-radius:999px;border:0;background:#2B2A28;color:#fff;font-size:16px;font-weight:500;cursor:pointer">Manage cookie preferences</button>
+      </sc-if>
+    </article>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;k&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;page&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;terms&quot;,&quot;privacy&quot;,&quot;cookies&quot;,&quot;shipping&quot;,&quot;returns&quot;,&quot;warranty&quot;,&quot;accessibility&quot;],&quot;default&quot;:&quot;terms&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  T = {
+    terms: ['Terms of Sale', [
+      ['Who we are', 'Kerfa sells flat-pack plywood furniture online to customers in the continental United States. By placing an order you agree to these terms.'],
+      ['Orders and pricing', 'Prices are listed in US dollars and include free standard shipping. We confirm every order by email. If a price is listed in error, we will contact you before charging your card.'],
+      ['Payment', 'We charge your card when your order ships. Promo codes and bundle discounts cannot be combined with other offers unless stated, and have no cash value.'],
+      ['Delivery and risk', 'Ownership and risk pass to you on delivery. If a box arrives visibly damaged, note it with the carrier and send us photos within 30 days.'],
+      ['Trial, returns and warranty', 'Every piece comes with a 100 night trial and a 10 year warranty. Details are in our Returns and Warranty pages, which form part of these terms.'],
+      ['Liability', 'Our total liability for any order is limited to the amount you paid for it. Nothing here limits rights you have under consumer protection law.']
+    ]],
+    privacy: ['Privacy Policy', [
+      ['What we collect', 'Your name, email, shipping address and phone number when you order or contact us. Payment details are handled by our payment processor and never stored on our servers.'],
+      ['How we use it', 'To process and deliver orders, answer support requests and, if you opt in, send product emails. We do not sell personal data.'],
+      ['Who we share it with', 'Carriers, our payment processor and email provider, only as needed to run the service. Each is bound by a data processing agreement.'],
+      ['How long we keep it', 'Order records are kept for 7 years for tax purposes. Support conversations are deleted after 2 years. Marketing data is removed as soon as you unsubscribe.'],
+      ['Your rights', 'You can request a copy of your data, ask us to correct or delete it, or opt out of marketing at any time by emailing hello@kerfa.co.'],
+      ['Contact', 'Questions about privacy go to hello@kerfa.co. We reply within 1 business day.']
+    ]],
+    cookies: ['Cookie Policy', [
+      ['What cookies are', 'Small files stored in your browser. We also use local storage, which works the same way, to remember your cart.'],
+      ['Essential', 'Keep your cart, checkout progress and cookie choice. These are always on because the shop does not work without them.'],
+      ['Analytics', 'Help us understand which pages are useful, using aggregated, anonymous data. Off unless you allow them.'],
+      ['Marketing', 'Measure whether our ads work. Off unless you allow them. We never use them to build a profile of you.'],
+      ['Changing your mind', 'You can update your choice at any time with the button below or the Cookie preferences link in the footer.']
+    ]],
+    shipping: ['Shipping & Delivery', [
+      ['Where we ship', 'The continental United States, including Washington, DC. We do not ship to Alaska, Hawaii, US territories or PO boxes yet.'],
+      ['Standard shipping', 'Free on every order. Delivered in 3 to 7 business days from the day you order.'],
+      ['Express shipping', 'Delivered in 1 to 2 business days for $49, free on orders over $800 after discounts.'],
+      ['The box', 'Every piece ships flat in a single box that fits through any door. The largest, the Desk, ships in a box of 57 x 30 x 6 in and weighs about 52 lb.'],
+      ['Tracking', 'You get a tracking link by email as soon as your order leaves our workshop, usually the next business day.']
+    ]],
+    returns: ['Returns & 100 Night Trial', [
+      ['The trial', 'Live with your piece for 100 nights from delivery. If it is not for you, return it for a full refund, including any shipping you paid.'],
+      ['Free pickup', 'We collect from your door at no cost. Flat-packed in the original box is ideal, but not required.'],
+      ['Condition', 'Normal use is fine. We cannot accept pieces with deliberate damage, water damage or permanent markings.'],
+      ['How to return', 'It takes four steps:', ['Email hello@kerfa.co with your order number.', 'Pick a pickup window from the link we send.', 'Pull the lock pins and pack the pieces flat.', 'Hand the box to the carrier. Your refund is issued within 5 business days.']],
+      ['Bundles and promo codes', 'Returning part of a bundle refunds that item at its discounted price. Promo code savings are deducted proportionally.']
+    ]],
+    warranty: ['Warranty', [
+      ['What it covers', '10 years on the structure and joints of every Kerfa piece: cracked panels, split joints and lock pins that no longer hold.'],
+      ['What it does not cover', 'Normal wear to the finish, scratches, water damage, sun fading, and damage from misuse or modifications.'],
+      ['How long', '10 years from the delivery date, transferable to a new owner if you sell or gift the piece.'],
+      ['How to claim', 'Email hello@kerfa.co with your order number and a photo. We send a replacement part, usually within 3 business days, at no cost.'],
+      ['Spare parts', 'Lock pins are covered for life. We mail spare sets for free, no questions asked.']
+    ]],
+    accessibility: ['Accessibility Statement', [
+      ['Our target', 'We aim for this site to meet the Web Content Accessibility Guidelines (WCAG) 2.1 level AA.'],
+      ['What we do', 'Semantic markup, visible focus states, keyboard support for every menu, dialog and form, text contrast of at least 4.5:1, and respect for reduced motion settings.'],
+      ['Known limitations', 'The hero assembly video has no audio description. The order timeline dates are estimates and may not be announced when they change.'],
+      ['Testing', 'We test with keyboard only, VoiceOver on macOS and iOS, and NVDA on Windows before each release.'],
+      ['Contact', 'If anything gets in your way, email hello@kerfa.co. We reply within 1 business day and can take orders by email.']
+    ]]
+  };
+  renderVals() {
+    const k = this.props.k, id = this.T[this.props.page] ? this.props.page : 'terms', [title, secs] = this.T[id];
+    return {
+      title, isCookies: id === 'cookies', openPrefs: () => k && k.openCookiePrefs(),
+      pages: Object.keys(this.T).map(key => ({ href: '#/legal/' + key, label: this.T[key][0], current: key === id ? 'page' : undefined, bg: key === id ? '#fff' : 'transparent', weight: key === id ? 500 : 400 })),
+      sections: secs.map(([h, p, list]) => ({ h, p, hasList: !!list, list: (list || []).map(t => ({ t })) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

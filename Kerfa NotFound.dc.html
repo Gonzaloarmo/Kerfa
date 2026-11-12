@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div ref="{{ rootRef }}" style="max-width:1280px;margin:0 auto;padding:172px 24px clamp(96px,12vw,160px);display:flex;flex-direction:column;align-items:center;text-align:center;gap:32px;color:#2B2A28">
+  <svg viewBox="170 68 472 578" height="160" width="130" role="img" aria-label="The Kerfa K logo, in pieces" style="overflow:visible;fill:#2B2A28">
+    <path data-k="stem" d="M170 161 A93 93 0 0 1 356 161 L356 552 A93 93 0 0 1 170 552 Z M294 378 A32 32 0 1 0 230 378 A32 32 0 1 0 294 378 Z" style="fill-rule:evenodd;transform-box:fill-box;transform-origin:50% 50%;transform:translate(-120px,60px) rotate(-18deg)"></path>
+    <path data-k="arm1" d="M398 183 L497 102 A93 93 0 0 1 612 248 L398 428 Z" style="transform-box:fill-box;transform-origin:50% 50%;transform:translate(140px,-90px) rotate(32deg)"></path>
+    <path data-k="arm2" d="M404 478 L548 356 L627 484 A93 93 0 0 1 468 581 Z" style="transform-box:fill-box;transform-origin:50% 50%;transform:translate(90px,130px) rotate(-40deg)"></path>
+  </svg>
+  <h1 style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(44px,6vw,88px);line-height:1;max-width:12ch">This page came apart.</h1>
+  <p style="margin:0;color:#77736C;font-size:18px">The link may be old, or the piece moved.</p>
+  <button onClick="{{ fix }}" disabled="{{ busy }}" style="height:52px;padding:0 28px;border-radius:999px;border:0;background:#2B2A28;color:#fff;font-size:16px;font-weight:500;cursor:pointer;transition:transform .35s cubic-bezier(.22,1.2,.36,1)" style-hover="transform:translateY(-2px) scale(1.02)">Put it back together</button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;k&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;}}">
+class Component extends DCLogic {
+  state = { busy: false };
+  rootRef = React.createRef();
+  fix() {
+    const k = this.props.k; if (!k || this.state.busy) return;
+    if (k.reduced) return k.go('#/');
+    this.setState({ busy: true });
+    const els = [...this.rootRef.current.querySelectorAll('[data-k]')];
+    els.forEach((el, i) => {
+      const from = el.style.transform;
+      const a = el.animate([{ transform: from }, { transform: 'translate(0,0) rotate(4deg)', offset: 0.75 }, { transform: 'none' }], { duration: 620, delay: i * 160, easing: 'cubic-bezier(.45,.05,.3,1)', fill: 'forwards' });
+      if (i === els.length - 1) a.onfinish = () => setTimeout(() => k.go('#/'), 260);
+    });
+  }
+  renderVals() { return { rootRef: this.rootRef, fix: () => this.fix(), busy: this.state.busy }; }
+}
+</script>
+</body>
+</html>

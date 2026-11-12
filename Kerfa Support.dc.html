@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="max-width:1280px;margin:0 auto;padding:148px 24px clamp(72px,10vw,120px);color:#2B2A28">
+  <nav aria-label="Breadcrumb" style="font-size:14px;color:#77736C">
+    <ol style="list-style:none;margin:0;padding:0;display:flex;gap:8px">
+      <li><a href="#/" style="color:#77736C">Home</a></li>
+      <li aria-hidden="true">/</li>
+      <li aria-current="page" style="color:#2B2A28">{{ crumb }}</li>
+    </ol>
+  </nav>
+
+  <sc-if value="{{ isHelp }}" hint-placeholder-val="{{ true }}">
+    <h1 style="margin:20px 0 32px;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(44px,6vw,88px);line-height:1">Help Center</h1>
+    <div style="position:relative;max-width:640px">
+      <label for="help-q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Search questions</label>
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" style="position:absolute;left:20px;top:18px;fill:none;stroke:#77736C;stroke-width:1.5;stroke-linecap:round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+      <input id="help-q" type="search" value="{{ q }}" onChange="{{ setQ }}" placeholder="Search questions" style="width:100%;height:56px;padding:0 20px 0 52px;border-radius:999px;border:1px solid #DDD6CB;background:#fff;font-family:inherit;font-size:17px;color:#2B2A28">
+    </div>
+    <div role="group" aria-label="Help categories" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px;margin-top:32px">
+      <sc-for list="{{ cats }}" as="c" hint-placeholder-count="5">
+        <button onClick="{{ c.pick }}" aria-pressed="{{ c.on }}" style="min-height:96px;padding:20px;border-radius:20px;border:1.5px solid {{ c.border }};background:{{ c.bg }};color:#2B2A28;text-align:left;display:flex;flex-direction:column;justify-content:space-between;gap:12px;cursor:pointer;transition:border-color .25s,background .25s">
+          <span style="font-family:'Inter Tight',sans-serif;font-weight:500;font-size:18px;letter-spacing:-0.01em">{{ c.label }}</span>
+          <span style="font-size:13px;color:#77736C">{{ c.count }}</span>
+        </button>
+      </sc-for>
+    </div>
+    <div style="margin-top:48px;border-top:1px solid #DDD6CB;max-width:880px">
+      <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="6">
+        <div style="border-bottom:1px solid #DDD6CB">
+          <h2 style="margin:0">
+            <button id="{{ f.btnId }}" onClick="{{ f.toggle }}" aria-expanded="{{ f.open }}" aria-controls="{{ f.panelId }}" style="width:100%;min-height:44px;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 0;background:none;border:0;color:#2B2A28;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:20px;letter-spacing:-0.01em;text-align:left;cursor:pointer">
+              <span>{{ f.q }}</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;transform:rotate({{ f.rot }});transition:transform .35s cubic-bezier(.22,1.2,.36,1)"><path d="M12 5v14M5 12h14"></path></svg>
+            </button>
+          </h2>
+          <div id="{{ f.panelId }}" role="region" aria-labelledby="{{ f.btnId }}" style="display:grid;grid-template-rows:{{ f.rows }};transition:grid-template-rows .35s ease">
+            <div style="overflow:hidden"><p style="margin:0 0 22px;color:#77736C;max-width:62ch">{{ f.a }}</p></div>
+          </div>
+        </div>
+      </sc-for>
+      <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+        <p style="margin:24px 0;color:#77736C">No questions match that search. Try another word, or ask us directly.</p>
+      </sc-if>
+    </div>
+    <section aria-labelledby="help-cta" style="margin-top:64px;background:#2B2A28;color:#fff;border-radius:24px;padding:clamp(32px,5vw,56px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px">
+      <div>
+        <h2 id="help-cta" style="margin:0 0 8px;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(28px,3.4vw,44px);line-height:1.05">Still stuck?</h2>
+        <p style="margin:0;color:#D9D3C9">We reply within 1 business day. Mon–Fri 9am–6pm ET.</p>
+      </div>
+      <a href="#/contact" style="height:52px;padding:0 28px;border-radius:999px;background:#fff;color:#2B2A28;font-weight:500;display:inline-flex;align-items:center;outline-color:#fff" style-hover="color:#2B2A28">Contact us</a>
+    </section>
+  </sc-if>
+
+  <sc-if value="{{ isContact }}" hint-placeholder-val="{{ false }}">
+    <h1 style="margin:20px 0 48px;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(44px,6vw,88px);line-height:1">Contact</h1>
+    <div style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+      <div style="flex:1.6 1 480px;min-width:0;background:#fff;border-radius:20px;padding:clamp(20px,3vw,32px)">
+        <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+          <div role="status" style="display:flex;flex-direction:column;align-items:flex-start;gap:16px;padding:24px 0">
+            <span aria-hidden="true" style="width:48px;height:48px;border-radius:999px;background:#3F6B4E;color:#fff;display:grid;place-items:center"><svg width="22" height="22" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12l5 5L20 7"></path></svg></span>
+            <p style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:26px;letter-spacing:-0.01em">Thanks. We'll reply within 1 business day.</p>
+            <button onClick="{{ reset }}" style="min-height:44px;padding:0;border:0;background:none;color:#2B2A28;font-size:14px;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Send another message</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+          <form onSubmit="{{ submit }}" noValidate="" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+            <sc-for list="{{ fields }}" as="f" hint-placeholder-count="5">
+              <div style="grid-column:span {{ f.span }}"><dc-import name="Kerfa Field" f="{{ f }}" hint-size="100%,80px"></dc-import></div>
+            </sc-for>
+            <button type="submit" disabled="{{ sending }}" style="grid-column:span 2;justify-self:start;height:52px;padding:0 28px;border-radius:999px;border:0;background:#2B2A28;color:#fff;font-size:16px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:10px;opacity:{{ sendOp }}">{{ sendLabel }}</button>
+          </form>
+        </sc-if>
+      </div>
+      <aside style="flex:1 1 280px;min-width:0;background:#EDE7DD;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:20px">
+        <div><p style="margin:0 0 4px;color:#77736C;font-size:14px">Email</p><a href="mailto:hello@kerfa.co" style="font-family:'Inter Tight',sans-serif;font-weight:500;font-size:22px;text-decoration:underline;text-underline-offset:4px">hello@kerfa.co</a></div>
+        <div><p style="margin:0 0 4px;color:#77736C;font-size:14px">Support hours</p><p style="margin:0;font-size:17px">Mon–Fri 9am–6pm ET</p></div>
+        <a href="#/help" style="font-size:14px;text-decoration:underline;text-underline-offset:3px;min-height:44px;display:flex;align-items:center">Browse the Help Center</a>
+      </aside>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;k&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;object&quot;},&quot;page&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;help&quot;,&quot;contact&quot;],&quot;default&quot;:&quot;help&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  F = [
+    ['Orders & shipping', 'How long does shipping take?', '3 to 7 business days in the continental US.'],
+    ['Orders & shipping', 'Can I change my order?', 'Yes, until it ships. Email hello@kerfa.co with your order number within 12 hours and we will update it.'],
+    ['Orders & shipping', 'Do you ship to Alaska and Hawaii?', 'Not yet. We ship to the 48 contiguous states and Washington, DC.'],
+    ['Assembly', 'Is it really stable without screws?', 'Yes. Each joint is cut to a 0.1 mm tolerance and secured with lock pins. Our desk holds up to 220 lb.'],
+    ['Assembly', 'What if I move?', 'Pull the pins, slide the pieces apart, and they fit back in the original box.'],
+    ['Assembly', 'Can I stack two Low Shelves?', 'Yes. The top edge has alignment slots, so a second Low Shelf sits flush and locks on with its own pins.'],
+    ['Returns & trial', 'How does the 100 night trial work?', "Use it at home. If it's not for you, we pick it up for free."],
+    ['Warranty', 'What if a piece arrives damaged?', 'Send us a photo within 30 days of delivery and we will ship a replacement part for free.'],
+    ['Warranty', 'Can I buy a replacement lock pin?', 'Spare pins are free under the 10 year warranty. Email us and we will mail a set.'],
+    ['Product care', 'What wood do you use?', 'FSC certified Baltic birch plywood with a water based matte finish.'],
+    ['Product care', 'Is the finish safe for kids and pets?', 'Yes. The water based matte finish is low VOC and fully cured before it ships.']
+  ];
+  CATS = ['Orders & shipping', 'Assembly', 'Returns & trial', 'Warranty', 'Product care'];
+  TOPICS = ['Order status', 'Assembly help', 'Returns & trial', 'Warranty claim', 'Something else'].map(l => ({ v: l, l }));
+  state = { q: '', cat: null, open: 0, v: { name: '', email: '', order: '', topic: '', message: '' }, err: {}, dirty: {}, sending: false, sent: false };
+  check(key, v) {
+    v = (v || '').trim();
+    if (key === 'name') return v ? '' : 'Enter your name.';
+    if (key === 'email') return !v ? 'Enter your email.' : /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? '' : 'Enter a valid email, like name@example.com.';
+    if (key === 'order') return !v || /^KRF-[A-Z0-9]{6}$/i.test(v) ? '' : 'Order numbers look like KRF-AB12CD.';
+    if (key === 'topic') return v ? '' : 'Choose a topic.';
+    if (key === 'message') return v.length >= 10 ? '' : 'Tell us a bit more (10 characters minimum).';
+    return '';
+  }
+  fld(key, label, o = {}) {
+    const s = this.state, narrow = (this.props.k?.vw ?? 1280) < 560;
+    return {
+      id: 'ct-' + key, name: key, label, value: s.v[key], err: s.err[key], ...o, span: narrow ? 2 : (o.span || 2),
+      onChange: e => { const val = e.target.value; this.setState(st => ({ v: { ...st.v, [key]: val }, dirty: { ...st.dirty, [key]: true }, err: st.err[key] ? { ...st.err, [key]: this.check(key, val) } : st.err })); },
+      onBlur: () => { const st = this.state; if (st.dirty[key] || st.err[key]) this.setState({ err: { ...st.err, [key]: this.check(key, st.v[key]) } }); }
+    };
+  }
+  renderVals() {
+    const k = this.props.k, page = this.props.page || 'help', s = this.state;
+    const q = s.q.trim().toLowerCase();
+    const list = this.F.map((f, i) => ({ f, i })).filter(({ f }) => (!s.cat || f[0] === s.cat) && (!q || (f[1] + ' ' + f[2]).toLowerCase().includes(q)));
+    return {
+      isHelp: page === 'help', isContact: page === 'contact', crumb: page === 'help' ? 'Help Center' : 'Contact',
+      q: s.q, setQ: e => this.setState({ q: e.target.value }),
+      cats: this.CATS.map(c => { const n = this.F.filter(f => f[0] === c).length, on = s.cat === c; return { label: c, count: `${n} ${n === 1 ? 'question' : 'questions'}`, on: on ? 'true' : 'false', border: on ? '#2B2A28' : '#DDD6CB', bg: on ? '#fff' : 'transparent', pick: () => this.setState({ cat: on ? null : c, open: -1 }) }; }),
+      faqs: list.map(({ f, i }) => ({ q: f[1], a: f[2], open: s.open === i ? 'true' : 'false', rows: s.open === i ? '1fr' : '0fr', rot: s.open === i ? '45deg' : '0deg', btnId: 'hq-b' + i, panelId: 'hq-p' + i, toggle: () => this.setState({ open: s.open === i ? -1 : i }) })),
+      noResults: !list.length,
+      sent: s.sent, notSent: !s.sent, sending: s.sending, sendOp: s.sending ? 0.6 : 1, sendLabel: s.sending ? 'Sending…' : 'Send message',
+      reset: () => this.setState({ sent: false, v: { name: '', email: '', order: '', topic: '', message: '' }, err: {}, dirty: {} }),
+      fields: [
+        this.fld('name', 'Name', { ac: 'name', span: 1 }), this.fld('email', 'Email', { type: 'email', ac: 'email', im: 'email', span: 1 }),
+        this.fld('order', 'Order number (optional)', { optional: true, ph: 'KRF-AB12CD', span: 1 }),
+        this.fld('topic', 'Topic', { kind: 'select', options: this.TOPICS, ph: 'Choose a topic', span: 1 }),
+        this.fld('message', 'Message', { kind: 'area' })
+      ],
+      submit: e => {
+        e.preventDefault(); if (s.sending) return;
+        const err = {}; let first = null;
+        ['name', 'email', 'order', 'topic', 'message'].forEach(key => { err[key] = this.check(key, s.v[key]); if (err[key] && !first) first = key; });
+        this.setState({ err });
+        if (first) return setTimeout(() => document.getElementById('ct-' + first)?.focus(), 30);
+        this.setState({ sending: true });
+        setTimeout(() => { this.setState({ sending: false, sent: true }); k && k.toast('Message sent'); }, 1000);
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

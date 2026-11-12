@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:#F3EFE8;color:#2B2A28;font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+*{box-sizing:border-box}
+a{color:#2B2A28;text-decoration:none}
+a:hover{color:#77736C}
+button{font-family:inherit}
+:focus-visible{outline:2px solid #2B2A28;outline-offset:3px}
+@keyframes kspin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="background:#F3EFE8;color:#2B2A28;font-family:Inter,system-ui,sans-serif;font-size:16px;line-height:1.5">
+
+<a href="#/" onClick="{{ skipToContent }}" style="position:fixed;top:8px;left:8px;z-index:200;padding:12px 18px;border-radius:999px;background:#2B2A28;color:#fff;font-weight:500;transform:translateY(-200%);transition:transform .2s" style-focus="transform:none;color:#fff">Skip to content</a>
+
+<sc-if value="{{ showBar }}" hint-placeholder-val="{{ true }}">
+  <div role="region" aria-label="Announcement" style="position:relative;z-index:51;height:40px;background:#2B2A28;color:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;padding:0 48px;text-align:center">
+    <p style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:{{ barOp }};transition:opacity .3s ease">{{ barText }}</p>
+    <button onClick="{{ closeBar }}" aria-label="Dismiss announcement" style="position:absolute;right:4px;top:0;width:44px;height:40px;border:0;background:transparent;color:#fff;display:grid;place-items:center;cursor:pointer;outline-color:#fff"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+  </div>
+</sc-if>
+
+<sc-if value="{{ notCheckout }}" hint-placeholder-val="{{ true }}">
+<header style="position:fixed;top:{{ navTop }};left:0;right:0;z-index:50;display:flex;justify-content:center;padding:0 24px;pointer-events:none;transition:top .3s ease">
+  <div ref="{{ headWrapRef }}" onMouseLeave="{{ megaLeave }}" onBlur="{{ megaBlur }}" style="pointer-events:auto;width:100%;max-width:1232px;position:relative">
+  <nav aria-label="Main" style="width:100%;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 8px 0 20px;background:{{ navBg }};backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid #DDD6CB;border-radius:999px">
+    <a href="#/" aria-label="Kerfa home" style="display:flex;align-items:center;gap:10px;min-height:44px">
+      <svg viewBox="170 68 472 578" width="23" height="28" role="img" aria-label="Kerfa logo" style="display:block;fill:#2B2A28"><path d="M170 161 A93 93 0 0 1 356 161 L356 552 A93 93 0 0 1 170 552 Z M294 378 A32 32 0 1 0 230 378 A32 32 0 1 0 294 378 Z" style="fill-rule:evenodd"></path><path d="M398 183 L497 102 A93 93 0 0 1 612 248 L398 428 Z"></path><path d="M404 478 L548 356 L627 484 A93 93 0 0 1 468 581 Z"></path></svg>
+      <span style="font-family:'Inter Tight',sans-serif;font-weight:600;letter-spacing:0.12em;font-size:15px">KERFA</span>
+    </a>
+    <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;gap:4px;font-size:14px;font-weight:500;white-space:nowrap">
+        <a ref="{{ shopLinkRef }}" href="#/shop" onMouseEnter="{{ megaEnter }}" onFocus="{{ megaEnter }}" onKeyDown="{{ shopKey }}" aria-expanded="{{ megaOpenS }}" aria-controls="mega" style="padding:12px 14px;border-radius:999px;display:flex;align-items:center;gap:4px">Shop<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;transform:rotate({{ megaRot }});transition:transform .2s"><path d="M6 9l6 6 6-6"></path></svg></a>
+        <a href="#how" onMouseEnter="{{ megaClose }}" onFocus="{{ megaClose }}" style="padding:12px 14px;border-radius:999px">How it works</a>
+        <a href="#/bundles" onMouseEnter="{{ megaClose }}" onFocus="{{ megaClose }}" style="padding:12px 14px;border-radius:999px">Bundles</a>
+        <a href="#faq" onMouseEnter="{{ megaClose }}" onFocus="{{ megaClose }}" style="padding:12px 14px;border-radius:999px">FAQ</a>
+      </div>
+    </sc-if>
+    <div style="display:flex;align-items:center;gap:4px">
+      <div ref="{{ searchRef }}" role="search" onBlur="{{ searchBlur }}" style="position:relative;display:flex;align-items:center">
+        <label for="k-search" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Search products</label>
+        <input ref="{{ searchInputRef }}" id="k-search" type="search" autoComplete="off" value="{{ q }}" onChange="{{ setQ }}" onKeyDown="{{ searchEnter }}" placeholder="Search" tabIndex="{{ searchTab }}" aria-hidden="{{ searchHidden }}" aria-controls="k-results" aria-expanded="{{ resultsOpenS }}" style="width:{{ searchW }};height:40px;padding:0 {{ searchPad }};border-radius:999px;border:1px solid {{ searchBorder }};background:#fff;font-family:inherit;font-size:14px;color:#2B2A28;opacity:{{ searchOp }};transition:width .3s cubic-bezier(.22,1,.36,1),padding .3s,opacity .2s,border-color .2s">
+        <button onClick="{{ toggleSearch }}" aria-label="{{ searchBtnLabel }}" aria-expanded="{{ searchOpenS }}" aria-controls="k-search" style="width:44px;height:44px;border-radius:999px;border:0;background:transparent;color:#2B2A28;display:grid;place-items:center;cursor:pointer">
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        </button>
+        <sc-if value="{{ resultsOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;top:54px;right:0;width:min(340px,calc(100vw - 32px));background:#fff;border:1px solid #DDD6CB;border-radius:20px;box-shadow:0 24px 48px -24px rgba(43,42,40,.3);padding:8px">
+            <ul id="k-results" aria-live="polite" style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column">
+              <sc-for list="{{ results }}" as="r" hint-placeholder-count="0">
+                <li><a href="{{ r.href }}" style="display:flex;align-items:center;gap:12px;padding:8px;border-radius:14px" style-hover="background:#F3EFE8;color:#2B2A28">
+                  <img src="{{ r.img }}" alt="" width="40" height="50" style="flex:none;width:40px;height:50px;border-radius:8px;object-fit:cover;background:#EFE6DF">
+                  <span style="flex:1;min-width:0;display:flex;flex-direction:column;font-size:14px;line-height:1.3"><span style="font-weight:500">{{ r.name }}</span><span style="color:#77736C;font-size:13px">{{ r.cat }}</span></span>
+                  <span style="font-size:14px;font-weight:500">{{ r.price }}</span>
+                </a></li>
+              </sc-for>
+            </ul>
+            <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:10px 12px;color:#77736C;font-size:14px">No pieces match "{{ q }}".</p></sc-if>
+          </div>
+        </sc-if>
+      </div>
+      <button ref="{{ cartBtnRef }}" onClick="{{ openCart }}" aria-label="Cart, {{ cart }} items" aria-haspopup="dialog" style="position:relative;width:44px;height:44px;border-radius:999px;border:0;background:transparent;color:#2B2A28;display:grid;place-items:center;cursor:pointer">
+        <svg width="22" height="22" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+        <span data-cartbadge="" style="position:absolute;top:4px;right:2px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#2B2A28;color:#fff;font-size:11px;font-weight:500;line-height:18px;text-align:center">{{ cart }}</span>
+      </button>
+      <sc-if value="{{ showNavCta }}" hint-placeholder-val="{{ true }}">
+        <a href="#/product/desk" style="flex:none;white-space:nowrap;margin-left:4px;height:44px;padding:0 20px;border-radius:999px;background:#2B2A28;color:#fff;font-size:14px;font-weight:500;display:flex;align-items:center;transition:transform .35s cubic-bezier(.22,1.2,.36,1)" style-hover="transform:translateY(-1px) scale(1.02);color:#fff">Shop the Desk</a>
+      </sc-if>
+      <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ openMenu }}" aria-label="Open menu" aria-expanded="{{ menuOpen }}" style="width:44px;height:44px;border-radius:999px;border:1px solid #DDD6CB;background:#fff;display:grid;place-items:center;cursor:pointer;color:#2B2A28">
+          <svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round"><path d="M4 8h16M4 16h16"></path></svg>
+        </button>
+      </sc-if>
+    </div>
+  </nav>
+  <sc-if value="{{ notMobile }}" hint-placeholder-val="{{ true }}">
+    <div id="mega" ref="{{ megaRef }}" onMouseEnter="{{ megaEnter }}" style="position:absolute;top:76px;left:0;right:0;background:#fff;border-radius:20px;border:1px solid #DDD6CB;box-shadow:0 30px 60px -30px rgba(43,42,40,.35);padding:28px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.3fr);gap:28px;opacity:{{ megaOp }};transform:translateY({{ megaY }});visibility:{{ megaVis }};transition:opacity .2s ease,transform .2s ease,visibility 0s linear {{ megaDelay }}">
+      <div>
+        <p style="margin:0 0 10px;font-size:13px;color:#77736C;letter-spacing:.08em;text-transform:uppercase">Categories</p>
+        <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column">
+          <sc-for list="{{ megaCats }}" as="c" hint-placeholder-count="4">
+            <li><a href="{{ c.href }}" onClick="{{ megaClose }}" style="display:flex;justify-content:space-between;align-items:center;min-height:48px;padding:0 12px;margin:0 -12px;border-radius:12px;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:20px;letter-spacing:-0.01em" style-hover="background:#F3EFE8;color:#2B2A28"><span>{{ c.label }}</span><span style="font-family:Inter,sans-serif;font-size:14px;color:#77736C">{{ c.count }}</span></a></li>
+          </sc-for>
+        </ul>
+      </div>
+      <a href="#/bundles" onClick="{{ megaClose }}" style="background:#F3EFE8;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:10px" style-hover="color:#2B2A28;background:#EDE7DD">
+        <span style="align-self:flex-start;padding:5px 12px;border-radius:999px;background:#E3CFA8;font-size:13px;font-weight:500">Save 15%</span>
+        <span style="margin-top:auto;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:26px;letter-spacing:-0.02em;line-height:1.1">Bundles</span>
+        <span style="color:#77736C;font-size:14px">Three room sets, from $340.</span>
+        <span style="font-weight:500;font-size:14px;display:flex;align-items:center;gap:6px">See bundles<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+      </a>
+      <div style="display:flex;gap:16px;align-items:stretch;background:#F3EFE8;border-radius:16px;padding:12px">
+        <img src="./assets/desk-card.png" alt="The Kerfa Desk, assembled" width="160" height="200" loading="lazy" style="flex:none;width:42%;aspect-ratio:4/5;height:auto;object-fit:cover;border-radius:12px;background:#EFE6DF">
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;padding:8px 4px">
+          <span style="font-size:13px;color:#77736C;letter-spacing:.08em;text-transform:uppercase">Featured</span>
+          <span style="font-family:'Inter Tight',sans-serif;font-weight:500;font-size:20px;letter-spacing:-0.01em;line-height:1.15">The Kerfa Desk</span>
+          <span style="font-size:15px">$340</span>
+          <a href="#/product/desk" onClick="{{ megaClose }}" style="margin-top:auto;align-self:flex-start;height:44px;padding:0 18px;border-radius:999px;background:#2B2A28;color:#fff;font-size:14px;font-weight:500;display:flex;align-items:center" style-hover="color:#fff">Shop the Desk</a>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  </div>
+</header>
+</sc-if>
+
+<sc-if value="{{ isCheckout }}" hint-placeholder-val="{{ false }}">
+  <header style="max-width:1280px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:1px solid #DDD6CB">
+    <a href="#/" aria-label="Kerfa home" style="display:flex;align-items:center;gap:10px;min-height:44px"><svg viewBox="170 68 472 578" width="23" height="28" role="img" aria-label="Kerfa logo" style="display:block;fill:#2B2A28"><path d="M170 161 A93 93 0 0 1 356 161 L356 552 A93 93 0 0 1 170 552 Z M294 378 A32 32 0 1 0 230 378 A32 32 0 1 0 294 378 Z" style="fill-rule:evenodd"></path><path d="M398 183 L497 102 A93 93 0 0 1 612 248 L398 428 Z"></path><path d="M404 478 L548 356 L627 484 A93 93 0 0 1 468 581 Z"></path></svg><span style="font-family:'Inter Tight',sans-serif;font-weight:600;letter-spacing:0.12em;font-size:15px">KERFA</span></a>
+    <span style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Secure checkout</span>
+    <a href="#/cart" style="min-height:44px;display:flex;align-items:center;gap:6px;font-size:14px;text-decoration:underline;text-underline-offset:3px">Back to cart</a>
+  </header>
+</sc-if>
+
+<sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+  <div ref="{{ menuRef }}" onKeyDown="{{ menuKey }}" role="dialog" aria-modal="true" aria-label="Menu" style="position:fixed;inset:0;z-index:60;background:#F3EFE8;display:flex;flex-direction:column;padding:24px;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;height:64px;flex:none">
+      <span style="font-family:'Inter Tight',sans-serif;font-weight:600;letter-spacing:0.12em">KERFA</span>
+      <button onClick="{{ closeMenu }}" aria-label="Close menu" style="width:44px;height:44px;border-radius:999px;border:1px solid #DDD6CB;background:#fff;display:grid;place-items:center;cursor:pointer;color:#2B2A28">
+        <svg width="20" height="20" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      </button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px;margin-top:32px;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:40px;letter-spacing:-0.02em">
+      <button onClick="{{ toggleMobShop }}" aria-expanded="{{ mobShopS }}" aria-controls="mob-shop" style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;background:none;border:0;font:inherit;letter-spacing:inherit;color:#2B2A28;cursor:pointer;text-align:left">Shop<svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;transform:rotate({{ mobShopRot }});transition:transform .35s cubic-bezier(.22,1.2,.36,1)"><path d="M12 5v14M5 12h14"></path></svg></button>
+      <div id="mob-shop" style="display:grid;grid-template-rows:{{ mobShopRows }};transition:grid-template-rows .35s ease">
+        <div style="overflow:hidden;visibility:{{ mobShopVis }}">
+          <ul style="list-style:none;margin:0;padding:0 0 16px;display:flex;flex-direction:column;font-family:Inter,sans-serif;font-size:18px;letter-spacing:0;font-weight:400">
+            <sc-for list="{{ megaCats }}" as="c" hint-placeholder-count="4">
+              <li><a href="{{ c.href }}" onClick="{{ closeMenu }}" style="display:flex;justify-content:space-between;align-items:center;min-height:48px"><span>{{ c.label }}</span><span style="color:#77736C;font-size:15px">{{ c.count }}</span></a></li>
+            </sc-for>
+            <li><a href="#/bundles" onClick="{{ closeMenu }}" style="display:flex;justify-content:space-between;align-items:center;min-height:48px"><span>Bundles</span><span style="padding:4px 10px;border-radius:999px;background:#E3CFA8;font-size:13px;font-weight:500">Save 15%</span></a></li>
+          </ul>
+        </div>
+      </div>
+      <a href="#how" onClick="{{ closeMenu }}" style="padding:8px 0">How it works</a>
+      <a href="#/bundles" onClick="{{ closeMenu }}" style="padding:8px 0">Bundles</a>
+      <a href="#faq" onClick="{{ closeMenu }}" style="padding:8px 0">FAQ</a>
+      <a href="#/help" onClick="{{ closeMenu }}" style="padding:8px 0">Help</a>
+    </div>
+    <a href="#/product/desk" onClick="{{ closeMenu }}" style="margin-top:auto;flex:none;height:52px;border-radius:999px;background:#2B2A28;color:#fff;font-weight:500;display:flex;align-items:center;justify-content:center" style-hover="color:#fff">Shop the Desk · $340</a>
+  </div>
+</sc-if>
+
+<div ref="{{ viewRef }}">
+<main id="top" style="display:{{ homeDisplay }}">
+<section aria-labelledby="hero-title" style="max-width:1280px;margin:0 auto;padding:clamp(120px,14vw,168px) 24px 0">
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:32px 48px">
+    <h1 id="hero-title" style="flex:1 1 560px;margin:0;padding-left:{{ heroInset }};position:relative;z-index:2;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(44px,7vw,104px);line-height:0.98;text-wrap:balance">
+      <span data-hero="0" style="display:block">Furniture that clicks.</span>
+      <span data-hero="1" style="display:block;color:#77736C">No tools. No screws.</span>
+      <span data-hero="2" style="display:block">No wobble.</span>
+    </h1>
+    <div style="flex:0 1 380px;display:flex;flex-direction:column;gap:24px;padding-bottom:{{ heroColPad }}">
+      <p data-hero="3" style="margin:0;color:#77736C;font-size:18px;line-height:1.5;max-width:34ch;text-wrap:pretty">Solid birch plywood pieces that slot together in under 10 minutes, and come apart just as easily when you move.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px">
+        <a data-hero="4" href="#/product/desk" style="height:52px;padding:0 26px;border-radius:999px;background:#2B2A28;color:#fff;font-weight:500;display:inline-flex;align-items:center;transition:transform .35s cubic-bezier(.22,1.2,.36,1)" style-hover="transform:translateY(-2px) scale(1.02);color:#fff">Shop the Desk · $340</a>
+        <button data-hero="5" onClick="{{ watch }}" disabled="{{ playing }}" aria-label="Watch it assemble" style="height:52px;padding:0 22px;border-radius:999px;background:transparent;border:1px solid #2B2A28;color:#2B2A28;font-size:16px;font-weight:500;display:inline-flex;align-items:center;gap:10px;cursor:pointer;opacity:{{ watchOpacity }};transition:transform .35s cubic-bezier(.22,1.2,.36,1),opacity .3s" style-hover="transform:translateY(-2px) scale(1.02)">
+          <svg width="14" height="14" viewBox="0 0 24 24" style="fill:currentColor"><path d="M6 4l14 8-14 8z"></path></svg>
+          <span>{{ watchLabel }}</span>
+        </button>
+      </div>
+      <ul data-hero="6" style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:#77736C">
+        <li style="display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M1 4h14v12H1z"></path><path d="M15 9h4l3 3v4h-7z"></path><circle cx="5.5" cy="18.5" r="2"></circle><circle cx="18.5" cy="18.5" r="2"></circle></svg>Free shipping in the US</li>
+        <li style="display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>100 night trial</li>
+        <li style="display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>10 year warranty</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="position:relative;z-index:1;margin-top:{{ heroPull }};border-radius:24px;overflow:hidden;aspect-ratio:{{ heroAspect }};background:#E9E2D8">
+    <video ref="{{ fwdRef }}" src="./assets/hero-assemble.mp4" poster="./assets/hero-poster.jpg" muted="" playsInline="" preload="auto" aria-label="A Kerfa desk assembling itself from a flat pack" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:{{ fwdOpacity }}"></video>
+    <video ref="{{ revRef }}" src="./assets/hero-reverse.mp4" muted="" playsInline="" preload="auto" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;opacity:{{ revOpacity }}"></video>
+    <sc-if value="{{ showHeroImg }}" hint-placeholder-val="{{ false }}">
+      <img src="./assets/hero-end.jpg" alt="The assembled Kerfa desk in a sunny living room" width="1920" height="1080" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+    </sc-if>
+    <sc-if value="{{ heroOverlap }}" hint-placeholder-val="{{ true }}">
+      <div aria-hidden="true" style="position:absolute;left:0;right:0;top:0;height:calc(1.96 * clamp(44px,7vw,104px) + 72px);background:linear-gradient(180deg,rgba(243,239,232,.94) 0%,rgba(243,239,232,.86) 55%,rgba(243,239,232,0) 100%);pointer-events:none"></div>
+    </sc-if>
+    <div data-hero="7" style="position:absolute;left:16px;bottom:16px;display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.86);border:1px solid rgba(255,255,255,.6);font-size:13px;font-weight:500">
+      <span aria-hidden="true" style="width:8px;height:8px;border-radius:999px;background:#2B2A28"></span>Assembled in 8 min · 0 tools
+    </div>
+  </div>
+</section>
+
+<section id="how" aria-labelledby="how-title" style="max-width:1280px;margin:0 auto;padding:clamp(72px,10vw,120px) 24px">
+  <h2 id="how-title" data-reveal="" style="margin:0 0 64px;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(36px,4.6vw,64px);line-height:1.02;max-width:14ch">From box to desk in 3 moves</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:48px;align-items:flex-start">
+    <ol data-steps="" style="flex:1 1 420px;list-style:none;margin:0;padding:0 0 0 48px;position:relative">
+      <svg aria-hidden="true" width="2" style="position:absolute;left:7px;top:12px;height:calc(100% - 24px);overflow:visible">
+        <line x1="1" y1="0" x2="1" y2="100%" style="stroke:#DDD6CB;stroke-width:2"></line>
+        <line data-connector="" x1="1" y1="0" x2="1" y2="100%" style="stroke:#2B2A28;stroke-width:2;stroke-linecap:round"></line>
+      </svg>
+
+      <li data-step="" style="position:relative;min-height:360px;padding-bottom:48px">
+        <span data-dot="" aria-hidden="true" style="position:absolute;left:-48px;top:6px;width:16px;height:16px;border-radius:999px;border:2px solid #2B2A28;background:#F3EFE8;transition:background .3s"></span>
+        <div style="font-family:'Inter Tight',sans-serif;font-weight:600;font-size:88px;line-height:.9;color:transparent;-webkit-text-stroke:2px #E3CFA8;letter-spacing:-0.02em">01</div>
+        <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:center;margin-top:16px">
+          <div style="flex:1 1 220px">
+            <h3 style="margin:0 0 8px;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:28px;letter-spacing:-0.02em">Unbox</h3>
+            <p style="margin:0;color:#77736C;max-width:32ch">Everything arrives flat in one box that fits through any door.</p>
+          </div>
+          <svg data-illu="" viewBox="0 0 200 150" width="200" height="150" role="img" aria-label="A half-open flat box with plywood panels inside" style="flex:none;fill:none;stroke:#2B2A28;stroke-width:2;stroke-linejoin:round;stroke-linecap:round">
+            <path data-draw="" d="M40 70 L100 42 L160 70"></path>
+            <path data-draw="" d="M100 42 L118 22 L178 50 L160 70"></path>
+            <path data-draw="" data-fill="" d="M64 76 L64 30 L114 53 L114 99 Z" style="fill:#E3CFA8"></path>
+            <path data-draw="" data-fill="" d="M84 70 L84 22 L134 45 L134 93 Z" style="fill:#E3CFA8"></path>
+            <path data-draw="" d="M40 70 L100 98 L100 132 L40 104 Z" style="fill:#F3EFE8"></path>
+            <path data-draw="" d="M100 98 L160 70 L160 104 L100 132 Z" style="fill:#F3EFE8"></path>
+            <path data-draw="" d="M40 70 L18 50 L78 22 L100 42"></path>
+          </svg>
+        </div>
+      </li>
+
+      <li data-step="" style="position:relative;min-height:360px;padding-bottom:48px">
+        <span data-dot="" aria-hidden="true" style="position:absolute;left:-48px;top:6px;width:16px;height:16px;border-radius:999px;border:2px solid #2B2A28;background:#F3EFE8;transition:background .3s"></span>
+        <div style="font-family:'Inter Tight',sans-serif;font-weight:600;font-size:88px;line-height:.9;color:transparent;-webkit-text-stroke:2px #E3CFA8;letter-spacing:-0.02em">02</div>
+        <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:center;margin-top:16px">
+          <div style="flex:1 1 220px">
+            <h3 style="margin:0 0 8px;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:28px;letter-spacing:-0.02em">Slot</h3>
+            <p style="margin:0;color:#77736C;max-width:32ch">Every joint is numbered. Line up the numbers and push.</p>
+          </div>
+          <svg data-illu="" viewBox="0 0 200 150" width="200" height="150" role="img" aria-label="A tenon lined up with its matching numbered slot" style="flex:none;fill:none;stroke:#2B2A28;stroke-width:2;stroke-linejoin:round;stroke-linecap:round">
+            <path data-draw="" data-fill="" d="M130 18 L170 38 L170 128 L130 108 Z" style="fill:#E3CFA8"></path>
+            <path data-draw="" d="M144 62 L154 67 L154 87 L144 82 Z" style="fill:#F3EFE8"></path>
+            <path data-draw="" data-fill="" d="M14 74 L74 102 L96 91 L36 63 Z" style="fill:#E3CFA8"></path>
+            <path data-draw="" d="M14 74 L14 82 L74 110 L74 102"></path>
+            <path data-draw="" d="M74 110 L96 99 L96 91"></path>
+            <path data-draw="" data-fill="" d="M80 92 L90 87 L110 96 L100 101 Z" style="fill:#E3CFA8"></path>
+            <path data-fill="" d="M114 92 L138 78" style="stroke-dasharray:3 5"></path>
+            <text data-fill="" x="44" y="94" style="fill:#2B2A28;stroke:none;font-family:'Inter Tight',sans-serif;font-size:13px;font-weight:600">2</text>
+            <text data-fill="" x="146" y="56" style="fill:#2B2A28;stroke:none;font-family:'Inter Tight',sans-serif;font-size:13px;font-weight:600">2</text>
+          </svg>
+        </div>
+      </li>
+
+      <li data-step="" style="position:relative;min-height:300px">
+        <span data-dot="" aria-hidden="true" style="position:absolute;left:-48px;top:6px;width:16px;height:16px;border-radius:999px;border:2px solid #2B2A28;background:#F3EFE8;transition:background .3s"></span>
+        <div style="font-family:'Inter Tight',sans-serif;font-weight:600;font-size:88px;line-height:.9;color:transparent;-webkit-text-stroke:2px #E3CFA8;letter-spacing:-0.02em">03</div>
+        <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:center;margin-top:16px">
+          <div style="flex:1 1 220px">
+            <h3 style="margin:0 0 8px;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:28px;letter-spacing:-0.02em">Done</h3>
+            <p style="margin:0;color:#77736C;max-width:32ch">Lock pins hold it tight. Lean on it, it won't move.</p>
+          </div>
+          <svg data-illu="" viewBox="0 0 200 150" width="200" height="150" role="img" aria-label="The assembled desk with a lock pin clicked in place" style="flex:none;fill:none;stroke:#2B2A28;stroke-width:2;stroke-linejoin:round;stroke-linecap:round">
+            <path data-draw="" data-fill="" d="M40 66 L84 46 L84 90 L40 110 Z" style="fill:#E3CFA8"></path>
+            <path data-draw="" data-fill="" d="M24 60 L104 94 L164 66 L84 32 Z" style="fill:#E3CFA8"></path>
+            <path data-draw="" d="M24 60 L24 67 L104 101 L104 94"></path>
+            <path data-draw="" d="M104 101 L164 73 L164 66"></path>
+            <path data-draw="" data-fill="" d="M108 102 L156 80 L156 124 L108 146 Z" style="fill:#E3CFA8"></path>
+            <path data-draw="" data-fill="" d="M146 88 L152 85 L152 99 L146 102 Z" style="fill:#F3EFE8"></path>
+            <path data-draw="" d="M162 82 L172 77"></path>
+            <path data-draw="" d="M164 92 L176 92"></path>
+            <path data-draw="" d="M162 102 L172 107"></path>
+          </svg>
+        </div>
+      </li>
+    </ol>
+
+    <div style="flex:1.2 1 420px;position:sticky;top:112px;align-self:flex-start">
+      <div style="border-radius:20px;overflow:hidden;aspect-ratio:16/11;background:#E9E2D8">
+        <img data-parallax="" src="./assets/flatpack.png" alt="Kerfa desk panels and lock pins lying flat on a wooden floor in the sun" width="1672" height="941" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.08)">
+      </div>
+    </div>
+  </div>
+  <p data-reveal="" style="margin:56px 0 0;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:clamp(20px,2vw,26px);letter-spacing:-0.01em;color:#77736C">Moving out? Reverse the steps. <span style="color:#2B2A28">Same box, same furniture.</span></p>
+</section>
+
+<section id="shop" aria-labelledby="shop-title" style="max-width:1280px;margin:0 auto;padding:clamp(72px,10vw,120px) 24px">
+  <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:40px">
+    <h2 id="shop-title" data-reveal="" style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(36px,4.6vw,64px);line-height:1.02">The collection</h2>
+    <div role="group" aria-label="Filter products" style="display:flex;flex-wrap:wrap;gap:8px">
+      <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+        <button onClick="{{ f.onClick }}" aria-pressed="{{ f.pressed }}" style="height:44px;padding:0 20px;border-radius:999px;border:1px solid {{ f.border }};background:{{ f.bg }};color:{{ f.color }};font-size:14px;font-weight:500;cursor:pointer;transition:background .25s,color .25s">{{ f.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:24px">
+    <sc-for list="{{ products }}" as="p" hint-placeholder-count="4">
+      <article data-card="{{ p.id }}" data-fly="" tabIndex="0" aria-label="{{ p.aria }}" onClick="{{ p.open }}" onKeyDown="{{ p.key }}" onMouseEnter="{{ p.enter }}" onMouseLeave="{{ p.leave }}" onFocus="{{ p.enter }}" onBlur="{{ p.leave }}" style="display:{{ p.display }};cursor:pointer;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 2px rgba(43,42,40,.06)">
+        <div style="position:relative;aspect-ratio:4/5;overflow:hidden;background:#EFE6DF">
+          <img src="{{ p.img }}" alt="{{ p.alt }}" width="1122" height="1402" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale({{ p.scale }});transition:transform .4s ease">
+          <img src="{{ p.exp }}" alt="{{ p.altExp }}" width="1122" height="1402" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:{{ p.expOp }};transform:scale({{ p.scale }});transition:opacity .4s ease,transform .4s ease">
+          <sc-if value="{{ p.badge }}" hint-placeholder-val="{{ false }}">
+            <span style="position:absolute;top:14px;left:14px;padding:6px 12px;border-radius:999px;background:#E3CFA8;color:#2B2A28;font-size:12px;font-weight:500">Bestseller</span>
+          </sc-if>
+          <button onClick="{{ p.add }}" aria-label="Quick add {{ p.name }} to cart" style="position:absolute;left:14px;right:14px;bottom:14px;height:44px;border-radius:999px;border:0;background:#2B2A28;color:#fff;font-size:14px;font-weight:500;cursor:pointer;transform:translateY({{ p.pillY }});opacity:{{ p.pillOp }};transition:transform .4s cubic-bezier(.22,1.2,.36,1),opacity .3s ease">Quick add</button>
+        </div>
+        <div style="padding:18px 20px 20px;display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+            <h3 style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:19px;letter-spacing:-0.01em">{{ p.name }}</h3>
+            <span style="font-weight:500">{{ p.priceText }}</span>
+          </div>
+          <p style="margin:0;color:#77736C;font-size:14px">{{ p.desc }}</p>
+          <div style="display:flex;gap:16px;margin-top:10px;padding-top:12px;border-top:1px solid #DDD6CB;font-size:13px;color:#2B2A28">
+            <span style="display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Assembly {{ p.time }}</span>
+            <span style="display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.8-3.8a6 6 0 0 1-7.9 7.9l-6.9 6.9a2.1 2.1 0 0 1-3-3l6.9-6.9a6 6 0 0 1 7.9-7.9z"></path><path d="M3 3l18 18"></path></svg>0 tools</span>
+          </div>
+        </div>
+      </article>
+    </sc-for>
+  </div>
+</section>
+
+<section id="bundles" aria-labelledby="bundles-title" style="max-width:1280px;margin:0 auto;padding:clamp(72px,10vw,120px) 24px">
+  <h2 id="bundles-title" data-reveal="" style="margin:0 0 48px;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(36px,4.6vw,64px);line-height:1.02">Build your room, save 15%</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:stretch">
+    <div role="radiogroup" aria-labelledby="bundles-title" style="flex:1 1 360px;display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{ bundles }}" as="b" hint-placeholder-count="3">
+        <div role="radio" data-bundle="{{ b.id }}" aria-checked="{{ b.checked }}" tabIndex="{{ b.tabIndex }}" onClick="{{ b.onClick }}" onKeyDown="{{ b.onKeyDown }}" style="flex:1 1 auto;display:flex;align-items:center;gap:16px;padding:22px 24px;border-radius:20px;background:#fff;border:1.5px solid {{ b.border }};cursor:pointer;transition:border-color .25s;box-shadow:0 1px 2px rgba(43,42,40,.06)">
+          <span aria-hidden="true" style="flex:none;width:22px;height:22px;border-radius:999px;border:1.5px solid #2B2A28;display:grid;place-items:center">
+            <span style="width:10px;height:10px;border-radius:999px;background:#2B2A28;transform:scale({{ b.dot }});transition:transform .3s cubic-bezier(.22,1.2,.36,1)"></span>
+          </span>
+          <span style="flex:1;min-width:0">
+            <span style="display:block;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:20px;letter-spacing:-0.01em">{{ b.name }}</span>
+            <span style="display:block;color:#77736C;font-size:14px">{{ b.itemsText }}</span>
+          </span>
+          <span style="text-align:right;white-space:nowrap">
+            <s style="display:block;color:#77736C;font-size:13px">{{ b.oldText }}</s>
+            <span style="font-weight:500;font-size:18px">{{ b.priceText }}</span>
+          </span>
+        </div>
+      </sc-for>
+    </div>
+    <div data-room="" data-fly="" style="flex:1.5 1 460px;display:flex;flex-direction:column;border-radius:24px;background:#EDE7DD;padding:28px;gap:24px">
+      <div role="region" aria-roledescription="carousel" aria-label="Products in this bundle" style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <span style="font-size:14px;color:#77736C">{{ roomCaption }}</span>
+          <div style="display:flex;gap:8px">
+            <button onClick="{{ roomPrev }}" aria-label="Previous product" style="width:44px;height:44px;border-radius:999px;border:1px solid #CFC6B8;background:#fff;color:#2B2A28;display:grid;place-items:center;cursor:pointer">
+              <svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M15 6l-6 6 6 6"></path></svg>
+            </button>
+            <button onClick="{{ roomNext }}" aria-label="Next product" style="width:44px;height:44px;border-radius:999px;border:1px solid #CFC6B8;background:#fff;color:#2B2A28;display:grid;place-items:center;cursor:pointer">
+              <svg width="18" height="18" viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M9 6l6 6-6 6"></path></svg>
+            </button>
+          </div>
+        </div>
+        <div style="overflow:hidden;border-radius:16px">
+        <div ref="{{ roomTrackRef }}" style="display:flex;transform:translateX({{ roomShift }});transition:transform .5s cubic-bezier(.22,1,.36,1)">
+          <sc-for list="{{ roomItems }}" as="r" hint-placeholder-count="1">
+            <figure data-room-item="" aria-hidden="{{ r.hidden }}" style="margin:0;flex:0 0 100%;min-width:0;background:#fff;border-radius:16px;overflow:hidden">
+              <img src="{{ r.img }}" alt="{{ r.name }}" width="1122" height="1402" loading="lazy" style="display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover">
+              <figcaption style="display:flex;justify-content:space-between;gap:8px;padding:12px 14px;font-size:14px">
+                <span style="font-weight:500">{{ r.name }}</span>
+                <span style="color:#77736C">{{ r.price }}</span>
+              </figcaption>
+            </figure>
+          </sc-for>
+        </div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:8px">
+          <sc-for list="{{ roomDots }}" as="d" hint-placeholder-count="2">
+            <button onClick="{{ d.onClick }}" aria-label="{{ d.label }}" aria-current="{{ d.current }}" style="width:{{ d.w }};height:8px;padding:0;border:0;border-radius:999px;background:{{ d.bg }};cursor:pointer;transition:width .3s,background .3s"></button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:baseline;gap:10px">
+            <span style="font-family:'Inter Tight',sans-serif;font-weight:500;font-size:40px;letter-spacing:-0.02em;line-height:1">{{ totalText }}</span>
+            <s style="color:#77736C">{{ oldTotalText }}</s>
+          </div>
+          <span data-savepill="" style="align-self:flex-start;padding:5px 12px;border-radius:999px;background:#E3CFA8;font-size:13px;font-weight:500">{{ saveText }}</span>
+        </div>
+        <button onClick="{{ buildBundle }}" style="height:52px;padding:0 28px;border-radius:999px;border:0;background:#2B2A28;color:#fff;font-size:16px;font-weight:500;cursor:pointer;transition:transform .35s cubic-bezier(.22,1.2,.36,1)" style-hover="transform:translateY(-2px) scale(1.02)">Build my bundle</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="proof-title" style="max-width:1280px;margin:0 auto;padding:clamp(72px,10vw,120px) 24px">
+  <h2 id="proof-title" data-reveal="" style="margin:0 0 48px;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(36px,4.6vw,64px);line-height:1.02">Moved 3 times. Still solid.</h2>
+  <div data-stats="" style="display:flex;flex-wrap:wrap;gap:24px">
+    <dl style="flex:1 1 340px;margin:0;background:#fff;border-radius:20px;padding:40px 36px;display:flex;flex-direction:column;justify-content:space-between;gap:32px;box-shadow:0 1px 2px rgba(43,42,40,.06)">
+      <div style="padding-bottom:28px;border-bottom:1px solid #DDD6CB">
+        <dt style="color:#77736C;font-size:14px;order:2">average assembly</dt>
+        <dd style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:clamp(48px,5vw,72px);letter-spacing:-0.02em;line-height:1">{{ statTime }}</dd>
+      </div>
+      <div style="padding-bottom:28px;border-bottom:1px solid #DDD6CB">
+        <dt style="color:#77736C;font-size:14px">tools needed</dt>
+        <dd style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:clamp(48px,5vw,72px);letter-spacing:-0.02em;line-height:1">{{ statTools }}</dd>
+      </div>
+      <div>
+        <dt style="color:#77736C;font-size:14px">from 2,100+ reviews</dt>
+        <dd style="margin:0;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <span style="font-family:'Inter Tight',sans-serif;font-weight:500;font-size:clamp(48px,5vw,72px);letter-spacing:-0.02em;line-height:1">{{ statRating }}</span>
+          <span role="img" aria-label="4.8 out of 5 stars" style="display:flex;gap:2px">
+            <sc-for list="{{ stars }}" as="s" hint-placeholder-count="5">
+              <svg width="18" height="18" viewBox="0 0 24 24" style="fill:#2B2A28"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.5L12 17.3l-5.9 3.2 1.3-6.5-4.9-4.6 6.6-.8z"></path></svg>
+            </sc-for>
+          </span>
+        </dd>
+      </div>
+    </dl>
+    <div style="flex:1.7 1 480px;min-height:440px;border-radius:20px;overflow:hidden;background:#E9E2D8;position:relative">
+      <img data-parallax="" src="./assets/room-desk.png" alt="The Kerfa Desk under a window in a bright apartment" width="1672" height="941" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.08)">
+    </div>
+  </div>
+
+  <div ref="{{ marqWrapRef }}" tabIndex="0" aria-label="Customer reviews" onMouseEnter="{{ pauseMarq }}" onMouseLeave="{{ resumeMarq }}" onFocus="{{ pauseMarq }}" onBlur="{{ resumeMarq }}" style="margin-top:48px;overflow-x:{{ marqOverflow }};overflow-y:hidden;border-radius:20px;scroll-snap-type:x mandatory">
+    <div ref="{{ marqRef }}" style="display:flex;gap:16px;width:max-content;padding:2px">
+      <sc-for list="{{ reviews }}" as="r" hint-placeholder-count="6">
+        <figure aria-hidden="{{ r.hidden }}" style="margin:0;flex:none;width:min(360px,80vw);background:#fff;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:20px;scroll-snap-align:start;box-shadow:0 1px 2px rgba(43,42,40,.06)">
+          <span role="img" aria-label="5 out of 5 stars" style="display:flex;gap:2px">
+            <sc-for list="{{ stars }}" as="s" hint-placeholder-count="5">
+              <svg width="14" height="14" viewBox="0 0 24 24" style="fill:#2B2A28"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.5L12 17.3l-5.9 3.2 1.3-6.5-4.9-4.6 6.6-.8z"></path></svg>
+            </sc-for>
+          </span>
+          <blockquote style="margin:0;font-size:17px;line-height:1.45;text-wrap:pretty;flex:1">“{{ r.quote }}”</blockquote>
+          <figcaption style="display:flex;align-items:center;gap:12px">
+            <span aria-hidden="true" style="width:40px;height:40px;border-radius:999px;background:#E3CFA8;display:grid;place-items:center;font-size:13px;font-weight:500">{{ r.initials }}</span>
+            <span style="display:flex;flex-direction:column;font-size:14px;line-height:1.3"><span style="font-weight:500">{{ r.name }}</span><span style="color:#77736C">{{ r.city }}</span></span>
+          </figcaption>
+        </figure>
+      </sc-for>
+    </div>
+  </div>
+  <p style="margin:16px 0 0;color:#77736C;font-size:12px">Concept project. Reviews are illustrative.</p>
+</section>
+
+<section id="faq" aria-labelledby="faq-title" style="max-width:1280px;margin:0 auto;padding:clamp(72px,10vw,120px) 24px">
+  <div style="display:flex;flex-wrap:wrap;gap:40px 64px">
+    <div style="flex:1 1 300px">
+      <h2 id="faq-title" data-reveal="" style="margin:0 0 16px;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(36px,4.6vw,64px);line-height:1.02;max-width:10ch">Questions, answered.</h2>
+      <p style="margin:0;color:#77736C">Still curious? <a href="mailto:hello@kerfa.co" style="color:#2B2A28;text-decoration:underline;text-underline-offset:3px">hello@kerfa.co</a></p>
+    </div>
+    <div style="flex:1.6 1 420px;border-top:1px solid #DDD6CB">
+      <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="5">
+        <div style="border-bottom:1px solid #DDD6CB">
+          <h3 style="margin:0">
+            <button id="{{ f.btnId }}" onClick="{{ f.toggle }}" aria-expanded="{{ f.open }}" aria-controls="{{ f.panelId }}" style="width:100%;min-height:44px;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:24px 0;background:none;border:0;color:#2B2A28;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:20px;letter-spacing:-0.01em;text-align:left;cursor:pointer">
+              <span>{{ f.q }}</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;transform:rotate({{ f.rot }});transition:transform .35s cubic-bezier(.22,1.2,.36,1)"><path d="M12 5v14M5 12h14"></path></svg>
+            </button>
+          </h3>
+          <div id="{{ f.panelId }}" role="region" aria-labelledby="{{ f.btnId }}" style="display:grid;grid-template-rows:{{ f.rows }};transition:grid-template-rows .35s ease">
+            <div style="overflow:hidden">
+              <p style="margin:0 0 24px;color:#77736C;max-width:58ch;opacity:{{ f.op }};transition:opacity .35s ease">{{ f.a }}</p>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="cta-title" style="max-width:1280px;margin:0 auto;padding:0 24px clamp(72px,10vw,120px)">
+  <div data-cta="" style="background:#2B2A28;border-radius:28px;padding:clamp(72px,10vw,120px) 24px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:32px;overflow:hidden">
+    <svg viewBox="170 68 472 578" height="120" width="98" role="img" aria-label="Kerfa K logo" style="overflow:visible;fill:#fff"><path data-k="stem" d="M170 161 A93 93 0 0 1 356 161 L356 552 A93 93 0 0 1 170 552 Z M294 378 A32 32 0 1 0 230 378 A32 32 0 1 0 294 378 Z" style="fill-rule:evenodd"></path><path data-k="arm2" d="M404 478 L548 356 L627 484 A93 93 0 0 1 468 581 Z"></path><path data-k="arm1" d="M398 183 L497 102 A93 93 0 0 1 612 248 L398 428 Z"></path></svg>
+    <h2 id="cta-title" data-cta-text="" style="margin:0;color:#fff;font-family:'Inter Tight',sans-serif;font-weight:500;letter-spacing:-0.02em;font-size:clamp(36px,5vw,72px);line-height:1.02;max-width:14ch;text-wrap:balance">Your next move just got easier.</h2>
+    <a data-cta-text="" href="#/shop" style="height:52px;padding:0 28px;border-radius:999px;background:#fff;color:#2B2A28;font-weight:500;display:inline-flex;align-items:center;transition:transform .35s cubic-bezier(.22,1.2,.36,1);outline-color:#fff" style-hover="transform:translateY(-2px) scale(1.02);color:#2B2A28">Shop the collection</a>
+  </div>
+</section>
+</main>
+
+<sc-if value="{{ rShop }}" hint-placeholder-val="{{ false }}"><main>
+<dc-import name="Kerfa Shop" k="{{ kerfa }}" cat="{{ routeParam }}" hint-size="100%,1400px"></dc-import>
+</main></sc-if>
+<sc-if value="{{ rProduct }}" hint-placeholder-val="{{ false }}"><main>
+<dc-import name="Kerfa Product" k="{{ kerfa }}" pid="{{ routeParam }}" hint-size="100%,1800px"></dc-import>
+</main></sc-if>
+<sc-if value="{{ rBundles }}" hint-placeholder-val="{{ false }}"><main>
+<dc-import name="Kerfa Bundles" k="{{ kerfa }}" hint-size="100%,1000px"></dc-import>
+</main></sc-if>
+<sc-if value="{{ rCart }}" hint-placeholder-val="{{ false }}"><main>
+<div style="max-width:1280px;margin:0 auto;padding:148px 24px clamp(72px,10vw,120px)"><dc-import name="Kerfa Cart" k="{{ kerfa }}" mode="page" hint-size="100%,800px"></dc-import></div>
+</main></sc-if>
+<sc-if value="{{ rCheckout }}" hint-placeholder-val="{{ false }}"><main>
+<dc-import name="Kerfa Checkout" k="{{ kerfa }}" hint-size="100%,1400px"></dc-import>
+</main></sc-if>
+<sc-if value="{{ rOrder }}" hint-placeholder-val="{{ false }}"><main>
+<dc-import name="Kerfa Order" k="{{ kerfa }}" oid="{{ routeParam }}" hint-size="100%,1200px"></dc-import>
+</main></sc-if>
+<sc-if value="{{ rHelp }}" hint-placeholder-val="{{ false }}"><main>
+<dc-import name="Kerfa Support" k="{{ kerfa }}" page="help" hint-size="100%,1400px"></dc-import>
+</main></sc-if>
+<sc-if value="{{ rContact }}" hint-placeholder-val="{{ false }}"><main>
+<dc-import name="Kerfa Support" k="{{ kerfa }}" page="contact" hint-size="100%,900px"></dc-import>
+</main></sc-if>
+<sc-if value="{{ rLegal }}" hint-placeholder-val="{{ false }}"><main>
+<dc-import name="Kerfa Legal" k="{{ kerfa }}" page="{{ routeParam }}" hint-size="100%,1400px"></dc-import>
+</main></sc-if>
+<sc-if value="{{ r404 }}" hint-placeholder-val="{{ false }}"><main>
+<dc-import name="Kerfa NotFound" k="{{ kerfa }}" hint-size="100%,800px"></dc-import>
+</main></sc-if>
+</div>
+
+<footer style="max-width:1280px;margin:0 auto;padding:0 24px 48px">
+  <sc-if value="{{ notCheckout }}" hint-placeholder-val="{{ true }}">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:40px 32px;padding:56px 0 48px;border-top:1px solid #DDD6CB;font-size:15px">
+      <nav aria-labelledby="ft-shop"><h2 id="ft-shop" style="margin:0 0 10px;font-size:13px;font-weight:500;color:#77736C;letter-spacing:.08em;text-transform:uppercase">Shop</h2><ul style="list-style:none;margin:0;padding:0"><li><a href="#/product/desk" style="display:flex;align-items:center;min-height:40px">Desk</a></li><li><a href="#/product/shelf" style="display:flex;align-items:center;min-height:40px">Low Shelf</a></li><li><a href="#/product/table" style="display:flex;align-items:center;min-height:40px">Side Table</a></li><li><a href="#/product/bench" style="display:flex;align-items:center;min-height:40px">Bench</a></li><li><a href="#/bundles" style="display:flex;align-items:center;min-height:40px">Bundles</a></li></ul></nav>
+      <nav aria-labelledby="ft-help"><h2 id="ft-help" style="margin:0 0 10px;font-size:13px;font-weight:500;color:#77736C;letter-spacing:.08em;text-transform:uppercase">Help</h2><ul style="list-style:none;margin:0;padding:0"><li><a href="#/help" style="display:flex;align-items:center;min-height:40px">Help Center</a></li><li><a href="#/contact" style="display:flex;align-items:center;min-height:40px">Contact</a></li><li><a href="#/legal/shipping" style="display:flex;align-items:center;min-height:40px">Shipping &amp; Delivery</a></li><li><a href="#/legal/returns" style="display:flex;align-items:center;min-height:40px">Returns &amp; 100 Night Trial</a></li><li><a href="#/legal/warranty" style="display:flex;align-items:center;min-height:40px">Warranty</a></li></ul></nav>
+      <nav aria-labelledby="ft-legal"><h2 id="ft-legal" style="margin:0 0 10px;font-size:13px;font-weight:500;color:#77736C;letter-spacing:.08em;text-transform:uppercase">Legal</h2><ul style="list-style:none;margin:0;padding:0"><li><a href="#/legal/terms" style="display:flex;align-items:center;min-height:40px">Terms of Sale</a></li><li><a href="#/legal/privacy" style="display:flex;align-items:center;min-height:40px">Privacy Policy</a></li><li><a href="#/legal/cookies" style="display:flex;align-items:center;min-height:40px">Cookie Policy</a></li><li><button onClick="{{ openPrefs }}" style="min-height:40px;padding:0;border:0;background:none;color:#2B2A28;font-size:15px;cursor:pointer" style-hover="color:#77736C">Cookie preferences</button></li><li><a href="#/legal/accessibility" style="display:flex;align-items:center;min-height:40px">Accessibility</a></li></ul></nav>
+      <div>
+        <h2 style="margin:0 0 10px;font-size:13px;font-weight:500;color:#77736C;letter-spacing:.08em;text-transform:uppercase">Newsletter</h2>
+        <sc-if value="{{ newsDone }}" hint-placeholder-val="{{ false }}">
+          <p role="status" style="margin:0;display:flex;align-items:center;gap:8px;color:#3F6B4E;font-weight:500"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12l5 5L20 7"></path></svg>You're in. First email lands soon.</p>
+        </sc-if>
+        <sc-if value="{{ newsForm }}" hint-placeholder-val="{{ true }}">
+          <form onSubmit="{{ subscribe }}" noValidate="" style="display:flex;flex-direction:column;gap:8px">
+            <label for="ft-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Email address</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <input id="ft-email" type="email" autoComplete="email" inputMode="email" value="{{ news }}" onChange="{{ setNews }}" placeholder="you@example.com" aria-invalid="{{ newsInvalid }}" aria-describedby="{{ newsErrRef }}" style="flex:1 1 160px;min-width:0;height:44px;padding:0 16px;border-radius:999px;border:1.5px solid {{ newsBorder }};background:#fff;font-family:inherit;font-size:15px;color:#2B2A28">
+              <button type="submit" style="height:44px;padding:0 20px;border-radius:999px;border:0;background:#2B2A28;color:#fff;font-size:14px;font-weight:500;cursor:pointer">Subscribe</button>
+            </div>
+            <sc-if value="{{ hasNewsErr }}" hint-placeholder-val="{{ false }}"><p id="ft-email-err" style="margin:0;color:#B3412F;font-size:13px;display:flex;align-items:center;gap:6px"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>{{ newsErr }}</p></sc-if>
+          </form>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+  <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px 24px;padding-top:28px;border-top:1px solid #DDD6CB;font-size:14px">
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <span style="display:flex;align-items:center;gap:10px"><svg viewBox="170 68 472 578" width="20" height="24" role="img" aria-label="Kerfa logo" style="display:block;fill:#2B2A28"><path d="M170 161 A93 93 0 0 1 356 161 L356 552 A93 93 0 0 1 170 552 Z M294 378 A32 32 0 1 0 230 378 A32 32 0 1 0 294 378 Z" style="fill-rule:evenodd"></path><path d="M398 183 L497 102 A93 93 0 0 1 612 248 L398 428 Z"></path><path d="M404 478 L548 356 L627 484 A93 93 0 0 1 468 581 Z"></path></svg><span style="font-family:'Inter Tight',sans-serif;font-weight:600;letter-spacing:0.12em">KERFA</span></span>
+      <span style="color:#77736C">© 2026 Kerfa</span>
+    </div>
+    <ul aria-label="Accepted payment methods" style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px">
+      <li><svg role="img" aria-label="Visa" width="46" height="30" viewBox="0 0 46 30"><rect x=".75" y=".75" width="44.5" height="28.5" rx="5" style="fill:#fff;stroke:#DDD6CB;stroke-width:1.5"></rect><text x="23" y="19" style="font-family:Inter,sans-serif;font-size:10px;font-weight:700;text-anchor:middle;fill:#2B2A28;font-style:italic">VISA</text></svg></li>
+      <li><svg role="img" aria-label="Mastercard" width="46" height="30" viewBox="0 0 46 30"><rect x=".75" y=".75" width="44.5" height="28.5" rx="5" style="fill:#fff;stroke:#DDD6CB;stroke-width:1.5"></rect><circle cx="19" cy="15" r="7" style="fill:none;stroke:#2B2A28;stroke-width:1.5"></circle><circle cx="27" cy="15" r="7" style="fill:none;stroke:#2B2A28;stroke-width:1.5"></circle></svg></li>
+      <li><svg role="img" aria-label="American Express" width="46" height="30" viewBox="0 0 46 30"><rect x=".75" y=".75" width="44.5" height="28.5" rx="5" style="fill:#fff;stroke:#DDD6CB;stroke-width:1.5"></rect><text x="23" y="19" style="font-family:Inter,sans-serif;font-size:9px;font-weight:700;text-anchor:middle;fill:#2B2A28;">AMEX</text></svg></li>
+      <li><svg role="img" aria-label="Apple Pay" width="46" height="30" viewBox="0 0 46 30"><rect x=".75" y=".75" width="44.5" height="28.5" rx="5" style="fill:#fff;stroke:#DDD6CB;stroke-width:1.5"></rect><text x="23" y="19" style="font-family:Inter,sans-serif;font-size:7.5px;font-weight:700;text-anchor:middle;fill:#2B2A28;">Apple Pay</text></svg></li>
+      <li><svg role="img" aria-label="Google Pay" width="46" height="30" viewBox="0 0 46 30"><rect x=".75" y=".75" width="44.5" height="28.5" rx="5" style="fill:#fff;stroke:#DDD6CB;stroke-width:1.5"></rect><text x="23" y="19" style="font-family:Inter,sans-serif;font-size:9px;font-weight:700;text-anchor:middle;fill:#2B2A28;">G Pay</text></svg></li>
+      <li><svg role="img" aria-label="PayPal" width="46" height="30" viewBox="0 0 46 30"><rect x=".75" y=".75" width="44.5" height="28.5" rx="5" style="fill:#fff;stroke:#DDD6CB;stroke-width:1.5"></rect><text x="23" y="19" style="font-family:Inter,sans-serif;font-size:8.5px;font-weight:700;text-anchor:middle;fill:#2B2A28;font-style:italic">PayPal</text></svg></li>
+    </ul>
+    <span style="color:#77736C">Concept project by Gonzalo Armocida</span>
+  </div>
+</footer>
+
+<div ref="{{ drawerRef }}" role="dialog" aria-modal="true" aria-label="Cart" aria-hidden="{{ drawerHidden }}" onKeyDown="{{ drawerKey }}" style="position:fixed;inset:0;z-index:80;visibility:{{ drawerVis }};transition:visibility 0s linear {{ drawerDelay }}">
+  <div onClick="{{ closeCart }}" style="position:absolute;inset:0;background:rgba(43,42,40,.3);opacity:{{ drawerOp }};transition:opacity .3s ease"></div>
+  <div style="position:absolute;top:0;right:0;bottom:0;width:min(420px,100%);background:#F3EFE8;transform:translateX({{ drawerX }});transition:transform .3s cubic-bezier(.22,1,.36,1);box-shadow:-24px 0 48px -24px rgba(43,42,40,.3);display:flex;flex-direction:column">
+    <dc-import name="Kerfa Cart" k="{{ kerfa }}" mode="drawer" hint-size="100%,100%" style="height:100%"></dc-import>
+  </div>
+</div>
+
+<sc-if value="{{ showCookie }}" hint-placeholder-val="{{ false }}">
+  <div role="region" aria-label="Cookie consent" style="position:fixed;left:16px;bottom:16px;z-index:70;width:min(420px,calc(100% - 32px));background:#fff;border:1px solid #DDD6CB;border-radius:20px;padding:20px;box-shadow:0 24px 48px -24px rgba(43,42,40,.3);display:flex;flex-direction:column;gap:14px">
+    <p style="margin:0;font-size:15px">We use cookies to keep your cart and improve the site.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+      <button onClick="{{ acceptCookies }}" style="height:44px;padding:0 20px;border-radius:999px;border:0;background:#2B2A28;color:#fff;font-size:14px;font-weight:500;cursor:pointer">Accept all</button>
+      <button onClick="{{ rejectCookies }}" style="height:44px;padding:0 20px;border-radius:999px;border:1px solid #2B2A28;background:transparent;color:#2B2A28;font-size:14px;font-weight:500;cursor:pointer">Reject</button>
+      <button onClick="{{ openPrefs }}" style="min-height:44px;padding:0 8px;border:0;background:none;color:#2B2A28;font-size:14px;text-decoration:underline;text-underline-offset:3px;cursor:pointer">Preferences</button>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ prefsOpen }}" hint-placeholder-val="{{ false }}">
+  <div ref="{{ prefsRef }}" role="dialog" aria-modal="true" aria-labelledby="ck-title" onKeyDown="{{ prefsKey }}" style="position:fixed;inset:0;z-index:96;display:grid;place-items:center;padding:16px">
+    <div onClick="{{ closePrefs }}" style="position:absolute;inset:0;background:rgba(43,42,40,.3)"></div>
+    <div style="position:relative;width:min(480px,100%);max-height:calc(100vh - 32px);overflow-y:auto;background:#fff;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px">
+        <h2 id="ck-title" style="margin:0;font-family:'Inter Tight',sans-serif;font-weight:500;font-size:24px;letter-spacing:-0.01em">Cookie preferences</h2>
+        <button onClick="{{ closePrefs }}" aria-label="Close" style="width:44px;height:44px;border-radius:999px;border:1px solid #DDD6CB;background:#fff;color:#2B2A28;display:grid;place-items:center;cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+      </div>
+      <sc-for list="{{ cookieRows }}" as="c" hint-placeholder-count="3">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:16px 0;border-top:1px solid #DDD6CB">
+          <div><p id="{{ c.lid }}" style="margin:0;font-weight:500">{{ c.label }}</p><p style="margin:4px 0 0;color:#77736C;font-size:14px">{{ c.desc }}</p></div>
+          <button role="switch" aria-checked="{{ c.on }}" aria-labelledby="{{ c.lid }}" disabled="{{ c.disabled }}" onClick="{{ c.toggle }}" style="flex:none;width:56px;height:44px;padding:0;border:0;background:none;cursor:{{ c.cursor }};display:grid;place-items:center">
+            <span style="position:relative;width:52px;height:30px;border-radius:999px;background:{{ c.bg }};opacity:{{ c.op }};transition:background .25s"><span style="position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:999px;background:#fff;transform:translateX({{ c.x }});transition:transform .25s cubic-bezier(.22,1.2,.36,1)"></span></span>
+          </button>
+        </div>
+      </sc-for>
+      <button onClick="{{ savePrefs }}" style="margin-top:8px;height:52px;border-radius:999px;border:0;background:#2B2A28;color:#fff;font-size:16px;font-weight:500;cursor:pointer">Save preferences</button>
+    </div>
+  </div>
+</sc-if>
+
+<div role="status" aria-live="polite" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:130;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;width:max-content;max-width:calc(100% - 32px)">
+  <sc-for list="{{ toasts }}" as="t" hint-placeholder-count="0">
+    <div data-toast="" style="padding:12px 20px;border-radius:999px;background:#2B2A28;color:#fff;font-size:14px;font-weight:500;display:flex;align-items:center;gap:8px;box-shadow:0 12px 24px -12px rgba(43,42,40,.5)"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" style="fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12l5 5L20 7"></path></svg>{{ t.msg }}</div>
+  </sc-for>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;ctaTiming&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Synced to video&quot;,&quot;Quick&quot;],&quot;default&quot;:&quot;Synced to video&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;marqueeSeconds&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:20,&quot;max&quot;:80,&quot;step&quot;:5,&quot;unit&quot;:&quot;s&quot;,&quot;default&quot;:40,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Motion&quot;}}">
+class Component extends DCLogic {
+  rootRef = React.createRef(); roomTrackRef = React.createRef(); fwdRef = React.createRef(); revRef = React.createRef();
+  marqRef = React.createRef(); marqWrapRef = React.createRef();
+  P = [
+    { id: 'desk', name: 'The Kerfa Desk', price: 340, desc: 'Fits a 30 inch monitor and your elbows.', time: '8 min', mins: 8, cat: 'Work', badge: true, alt: 'The Kerfa Desk, assembled',
+      dims: '55" W x 27.5" D x 29.5" H', cm: '140 x 70 x 75 cm', weight: '48 lb', load: 'Holds up to 220 lb', box: ['Tabletop', '2 side panels', 'Stretcher rail', '4 lock pins'],
+      images: ['desk-card.png', 'desk-exploded.png', 'hero-end.jpg', 'flatpack.png'], imgAlts: ['The Kerfa Desk, assembled', 'The Kerfa Desk, exploded view of its parts', 'The Kerfa Desk in a sunny living room', 'Kerfa Desk panels and lock pins lying flat'],
+      steps: ['Lay out the tabletop, both side panels and the stretcher rail.', 'Slot the side panels into the rail, matching the numbers, then drop the top on.', "Push in the 4 lock pins. Lean on it, it won't move."],
+      reviews: [{ q: 'Fits my 32 inch monitor with room for a notebook. Zero wobble.', n: 'Alex T.', c: 'Denver', i: 'AT' }, { q: 'Built it in 7 minutes on a call. Nobody noticed.', n: 'Sam L.', c: 'Portland', i: 'SL' }, { q: 'Moved apartments twice. It went back in the box both times.', n: 'Maya R.', c: 'Austin', i: 'MR' }] },
+    { id: 'shelf', name: 'The Low Shelf', price: 220, desc: 'Books, plants, records. Stack a second one on top.', time: '6 min', mins: 6, cat: 'Storage', alt: 'The Low Shelf with a diagonal brace',
+      dims: '39.4" W x 11.8" D x 29.5" H', cm: '100 x 30 x 75 cm', weight: '31 lb', load: '33 lb per shelf', box: ['2 side panels', '3 shelves', 'Diagonal brace', '6 lock pins'],
+      images: ['shelf-card.png', 'shelf-exploded.png'], imgAlts: ['The Low Shelf, assembled', 'The Low Shelf, exploded view of its parts'],
+      steps: ['Lay out both side panels, the 3 shelves and the brace.', 'Slide the shelves into the side panels, then add the diagonal brace.', 'Push in the 6 lock pins. Each shelf holds 33 lb.'],
+      reviews: [{ q: 'Holds my whole record collection. Stacked a second one last month.', n: 'Jordan P.', c: 'Philadelphia', i: 'JP' }, { q: 'Six minutes, no instructions needed. The numbers do the work.', n: 'Nina V.', c: 'Minneapolis', i: 'NV' }, { q: 'Looks better than shelves twice the price.', n: 'Chris O.', c: 'Atlanta', i: 'CO' }] },
+    { id: 'table', name: 'The Side Table', price: 95, desc: 'Assembles in 90 seconds. We timed it.', time: '90 sec', mins: 1.5, cat: 'Living', alt: 'The Side Table with cross-slotted legs',
+      dims: '17.7" x 17.7" x 19.7" H', cm: '45 x 45 x 50 cm', weight: '10 lb', load: 'Holds up to 66 lb', box: ['Top', '2 interlocking leg panels', '1 lock pin'],
+      images: ['table-card.png', 'table-exploded.png'], imgAlts: ['The Side Table, assembled', 'The Side Table, exploded view of its parts'],
+      steps: ['Unpack the top and the two leg panels.', 'Cross the leg panels at the center slot so they lock together.', 'Drop the top on and push in the lock pin.'],
+      reviews: [{ q: 'My partner timed me. 74 seconds.', n: 'Priya S.', c: 'Seattle', i: 'PS' }, { q: 'Perfect height next to the sofa. Light enough to move with one hand.', n: 'Leo M.', c: 'San Diego', i: 'LM' }, { q: 'Bought two, one for each side of the bed.', n: 'Hana K.', c: 'Boston', i: 'HK' }] },
+    { id: 'bench', name: 'The Bench', price: 180, desc: 'Seats two. Doubles as a shoe rack.', time: '4 min', mins: 4, cat: 'Living', alt: 'The Bench with a lower shelf',
+      dims: '43.3" W x 13.8" D x 17.7" H', cm: '110 x 35 x 45 cm', weight: '20 lb', load: 'Holds up to 440 lb', box: ['Seat', '2 side panels', 'Shoe shelf', '4 lock pins'],
+      images: ['bench-card.png', 'bench-exploded.png'], imgAlts: ['The Bench, assembled', 'The Bench, exploded view of its parts'],
+      steps: ['Lay out the seat, both side panels and the shoe shelf.', 'Slot the seat and the shoe shelf into the side panels.', 'Push in the 4 lock pins. Seats two, no creak.'],
+      reviews: [{ q: 'Finally a place for shoes by the door.', n: 'Daniel K.', c: 'Chicago', i: 'DK' }, { q: 'Two adults sit on it every morning. Not a creak.', n: 'Rosa G.', c: 'Phoenix', i: 'RG' }, { q: 'Four minutes, including unboxing.', n: 'Tom B.', c: 'Nashville', i: 'TB' }] }
+  ];
+  B = [
+    { id: 'home-office', name: 'The Home Office', items: ['desk', 'shelf'], label: 'Desk + Low Shelf', old: 560, price: 476 },
+    { id: 'entryway', name: 'The Entryway', items: ['bench', 'shelf'], label: 'Bench + Low Shelf', old: 400, price: 340 },
+    { id: 'full', name: 'The Full Kerfa', items: ['desk', 'shelf', 'table', 'bench'], label: 'Desk + Low Shelf + Side Table + Bench', old: 835, price: 710 }
+  ];
+  R = [
+    { quote: "I built the desk while my coffee was brewing. Took it apart for my move to Austin and it's still perfect.", name: 'Maya R.', city: 'Brooklyn → Austin', initials: 'MR' },
+    { quote: "Finally furniture that doesn't make me dread moving day.", name: 'Daniel K.', city: 'Chicago', initials: 'DK' },
+    { quote: 'My partner timed me on the side table. 74 seconds.', name: 'Priya S.', city: 'Seattle', initials: 'PS' }
+  ];
+  F = [
+    ['Is it really stable without screws?', 'Yes. Each joint is cut to a 0.1 mm tolerance and secured with lock pins. Our desk holds up to 220 lb.'],
+    ['What wood do you use?', 'FSC certified Baltic birch plywood with a water based matte finish.'],
+    ['What if I move?', 'Pull the pins, slide the pieces apart, and they fit back in the original box.'],
+    ['How does the 100 night trial work?', "Use it at home. If it's not for you, we pick it up for free."],
+    ['How long does shipping take?', '3 to 7 business days in the continental US.']
+  ];
+  LEGAL = { terms: 'Terms of Sale', privacy: 'Privacy Policy', cookies: 'Cookie Policy', shipping: 'Shipping & Delivery', returns: 'Returns & 100 Night Trial', warranty: 'Warranty', accessibility: 'Accessibility Statement' };
+  viewRef = React.createRef(); headWrapRef = React.createRef(); megaRef = React.createRef(); shopLinkRef = React.createRef(); cartBtnRef = React.createRef(); drawerRef = React.createRef(); searchRef = React.createRef(); searchInputRef = React.createRef(); prefsRef = React.createRef(); menuRef = React.createRef();
+  state = { route: { name: 'home' }, items: [], promo: null, consent: 'pending', prefsOpen: false, prefs: { analytics: false, marketing: false }, order: null, drawer: false, mega: false, search: false, q: '', bar: true, barIdx: 0, barOp: 1, scrolled: false, mobShop: false, toasts: [], news: '', newsDone: false, newsErr: '', menu: false, vw: 1280, reduced: false, touch: false, hover: null, filter: 'All', bundle: 'home-office', shownTotal: 476, statP: 0, faq: 0, playing: false, active: 'fwd', userPlayed: false, blur: true };
+
+  componentDidMount() {
+    this.initStore();
+    const root = this.rootRef.current; if (!root) return;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.reduced = reduced;
+    this.setState({ reduced, touch: matchMedia('(hover: none)').matches, vw: innerWidth, blur: CSS.supports('backdrop-filter', 'blur(1px)') || CSS.supports('-webkit-backdrop-filter', 'blur(1px)'), statP: reduced ? 1 : 0 });
+    this.onResize = () => this.setState({ vw: innerWidth });
+    addEventListener('resize', this.onResize);
+    this.setupVideo();
+    if (!reduced) this.heroReveal(root);
+    this.setupReveals(root);
+    this.setupSteps(root);
+    this.onScroll = () => { if (!this.tick) { this.tick = requestAnimationFrame(() => { this.tick = 0; this.scrollFx(); }); } };
+    addEventListener('scroll', this.onScroll, { passive: true });
+    addEventListener('resize', this.onScroll);
+    this.scrollFx();
+    if (!reduced) this.startMarquee();
+  }
+  componentWillUnmount() {
+    removeEventListener('resize', this.onResize); removeEventListener('scroll', this.onScroll); removeEventListener('resize', this.onScroll);
+    removeEventListener('hashchange', this.onHash); removeEventListener('keydown', this.onKey); removeEventListener('mousedown', this.onDown); clearInterval(this.barT);
+    cancelAnimationFrame(this.marqRaf); cancelAnimationFrame(this.revRaf); (this.ios || []).forEach(o => o.disconnect());
+  }
+
+  setupVideo() {
+    const f = this.fwdRef.current, r = this.revRef.current; if (!f || !r) return;
+    f.muted = true; r.muted = true;
+    r.addEventListener('error', () => { this.revOk = false; });
+    r.addEventListener('ended', () => this.playForward());
+    f.addEventListener('ended', () => { if (this.state.playing) this.setState({ playing: false }); });
+    if (!this.reduced) f.play().catch(() => {});
+  }
+  playForward() {
+    const f = this.fwdRef.current; f.currentTime = 0;
+    f.play().then(() => this.setState({ active: 'fwd' })).catch(() => this.setState({ active: 'fwd', playing: false }));
+  }
+  watch() {
+    if (this.state.playing) return;
+    const f = this.fwdRef.current, r = this.revRef.current;
+    this.setState({ playing: true, userPlayed: true });
+    if (this.revOk === false || !r) return this.fallbackReverse();
+    r.currentTime = 0;
+    r.play().then(() => { this.setState({ active: 'rev' }); f.pause(); }).catch(() => this.fallbackReverse());
+  }
+  fallbackReverse() {
+    const f = this.fwdRef.current; f.pause(); this.setState({ active: 'fwd' });
+    const go = () => {
+      if (!f.duration) return requestAnimationFrame(go);
+      if (f.currentTime < 0.05) f.currentTime = f.duration;
+      let last = performance.now();
+      const step = now => {
+        const t = f.currentTime - (now - last) / 1000; last = now;
+        if (t <= 0) { f.currentTime = 0; return this.playForward(); }
+        f.currentTime = t; this.revRaf = requestAnimationFrame(step);
+      };
+      this.revRaf = requestAnimationFrame(step);
+    };
+    go();
+  }
+
+  heroReveal(root) {
+    const synced = (this.props.ctaTiming ?? 'Synced to video') === 'Synced to video';
+    const d = synced ? [300, 380, 460, 1200, 5900, 5980, 6300, 6900] : [300, 380, 460, 540, 620, 700, 780, 860];
+    root.querySelectorAll('[data-hero]').forEach(el => {
+      el.animate([{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'none' }],
+        { duration: 900, delay: d[+el.dataset.hero] || 0, easing: 'cubic-bezier(.22,1.2,.36,1)', fill: 'backwards' });
+    });
+  }
+  reveal(el, delay = 0) {
+    if (el.dataset.revealed) return; el.dataset.revealed = '1';
+    el.style.opacity = ''; el.style.transform = '';
+    if (this.reduced) return;
+    el.animate([{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'none' }],
+      { duration: 800, delay, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' });
+  }
+  setupReveals(root) {
+    this.ios = [];
+    const vh = innerHeight;
+    const hide = el => { if (!this.reduced && el.getBoundingClientRect().top > vh) { el.style.opacity = '0'; } else el.dataset.revealed = '1'; };
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return; io.unobserve(e.target);
+      if (e.target.dataset.card) {
+        const vis = [...root.querySelectorAll('[data-card]')].filter(c => c.style.display !== 'none' && !c.dataset.revealed);
+        vis.forEach((c, i) => this.reveal(c, i * 60));
+      } else this.reveal(e.target);
+    }), { threshold: 0.15 });
+    root.querySelectorAll('[data-reveal],[data-card]').forEach(el => { hide(el); if (!el.dataset.revealed) io.observe(el); });
+    this.ios.push(io);
+
+    const room = root.querySelector('[data-room]');
+    const io2 = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { io2.disconnect(); this.dropRoom(); } }), { threshold: 0.3 });
+    if (room) io2.observe(room); this.ios.push(io2);
+
+    const stats = root.querySelector('[data-stats]');
+    const io3 = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return; io3.disconnect(); if (this.reduced) return;
+      const t0 = performance.now();
+      const step = now => { const p = Math.min(1, (now - t0) / 1400); this.setState({ statP: 1 - Math.pow(1 - p, 3) }); if (p < 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+    }), { threshold: 0.3 });
+    if (stats) io3.observe(stats); this.ios.push(io3);
+
+    const cta = root.querySelector('[data-cta]');
+    const ks = [...root.querySelectorAll('[data-k]')], txt = [...root.querySelectorAll('[data-cta-text]')];
+    if (!this.reduced) [...ks, ...txt].forEach(el => { el.style.opacity = '0'; });
+    const io4 = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return; io4.disconnect(); if (this.reduced) return;
+      [...ks, ...txt].forEach(el => { el.style.opacity = ''; });
+      const hinge = {
+        stem: { o: '50% 100%', kf: ['translateY(320px)', 'translateY(-14px)', 'translateY(4px)'], d: 0 },
+        arm1: { o: '0% 100%', kf: ['translateX(70px) rotate(-105deg)', 'rotate(7deg)', 'rotate(-2deg)'], d: 520 },
+        arm2: { o: '61% 0%', kf: ['rotate(-150deg)', 'rotate(8deg)', 'rotate(-2deg)'], d: 1250, fold: true }
+      };
+      ks.forEach(k => {
+        const c = hinge[k.dataset.k];
+        k.style.transformBox = 'fill-box'; k.style.transformOrigin = c.o;
+        k.animate([{ transform: c.kf[0], opacity: 0 }, { opacity: 1, offset: c.fold ? 0.04 : 0.2 }, { transform: c.kf[1], offset: 0.7 }, { transform: c.kf[2], offset: 0.86 }, { transform: 'none', opacity: 1 }],
+          { duration: 820, delay: c.d, easing: 'cubic-bezier(.45,.05,.3,1)', fill: 'backwards' });
+      });
+      txt.forEach((t, i) => t.animate([{ opacity: 0, transform: 'translateY(20px)' }, { opacity: 1, transform: 'none' }],
+        { duration: 700, delay: 2100 + i * 120, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' }));
+    }), { threshold: 0.4 });
+    if (cta) io4.observe(cta); this.ios.push(io4);
+  }
+  setupSteps(root) {
+    this.steps = root.querySelector('[data-steps]');
+    this.conn = root.querySelector('[data-connector]');
+    this.stepEls = [...root.querySelectorAll('[data-step]')].map(li => {
+      const draws = [...li.querySelectorAll('[data-draw]')].map(p => { const L = p.getTotalLength ? p.getTotalLength() : 200; p.style.strokeDasharray = L; p.style.strokeDashoffset = this.reduced ? 0 : L; return { p, L }; });
+      const fills = [...li.querySelectorAll('[data-fill]')];
+      fills.forEach(f => { f.style.transition = 'fill-opacity .5s ease, opacity .5s ease'; if (!this.reduced) { if (f.tagName === 'path' && f.dataset.draw !== undefined) f.style.fillOpacity = 0; else f.style.opacity = 0; } });
+      return { li, draws, fills, dot: li.querySelector('[data-dot]') };
+    });
+    if (this.reduced) this.stepEls.forEach(s => { s.dot.style.background = '#2B2A28'; });
+  }
+  scrollFx() {
+    const sc = scrollY > 40; if (sc !== this.state.scrolled) this.setState({ scrolled: sc });
+    if (this.reduced || this.state.route.name !== 'home') return;
+    const vh = innerHeight;
+    if (this.steps && this.conn) {
+      const r = this.steps.getBoundingClientRect(), h = r.height - 24;
+      const p = Math.max(0, Math.min(1, (vh * 0.6 - r.top) / r.height));
+      this.conn.style.strokeDasharray = h; this.conn.style.strokeDashoffset = h * (1 - p);
+      this.stepEls.forEach(s => {
+        const st = s.li.offsetTop / r.height;
+        const local = Math.max(0, Math.min(1, (p - st + 0.04) / 0.2));
+        s.draws.forEach(({ p: el, L }) => { el.style.strokeDashoffset = L * (1 - local); });
+        const on = local > 0.75;
+        s.fills.forEach(f => { if (f.dataset.draw !== undefined && f.tagName === 'path') f.style.fillOpacity = on ? 1 : 0; else f.style.opacity = on ? 1 : 0; });
+        s.dot.style.background = local > 0 ? '#2B2A28' : '#F3EFE8';
+      });
+    }
+    this.rootRef.current.querySelectorAll('[data-parallax]').forEach(img => {
+      const r = img.parentElement.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > vh) return;
+      const off = (r.top + r.height / 2 - vh / 2) / vh;
+      const y = Math.max(-20, Math.min(20, -off * 40));
+      img.style.transform = `translateY(${y.toFixed(1)}px) scale(1.08)`;
+    });
+  }
+  startMarquee() {
+    let x = 0, last = performance.now();
+    const step = now => {
+      const dt = now - last; last = now;
+      const t = this.marqRef.current;
+      if (t && !this.paused) {
+        const half = t.scrollWidth / 2, secs = this.props.marqueeSeconds ?? 40;
+        x -= dt * half / (secs * 1000); if (x <= -half) x += half;
+        t.style.transform = `translateX(${x.toFixed(2)}px)`;
+      }
+      this.marqRaf = requestAnimationFrame(step);
+    };
+    this.marqRaf = requestAnimationFrame(step);
+  }
+
+  bounceCart() {
+    const b = this.rootRef.current?.querySelector('[data-cartbadge]');
+    if (b && !this.reduced) b.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.45)' }, { transform: 'scale(1)' }], { duration: 450, easing: 'cubic-bezier(.22,1.2,.36,1)' });
+  }
+  addToCart() {}
+  money(n) { return '$' + (Number.isInteger(n) ? n.toLocaleString('en-US') : n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })); }
+  load(k, d) { try { const v = localStorage.getItem('kerfa.' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+  save(k, v) { try { localStorage.setItem('kerfa.' + k, JSON.stringify(v)); } catch (e) {} }
+  initStore() {
+    this.reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const items = this.load('cart', []), consent = this.load('consent', null), order = this.load('order', null);
+    this.setState({ items: Array.isArray(items) ? items.filter(i => i && this.P.some(p => p.id === i.id) && i.qty > 0) : [], promo: this.load('promo', null), consent, prefs: (consent && consent.prefs) || { analytics: false, marketing: false }, order });
+    this.onHash = () => this.route(location.hash);
+    addEventListener('hashchange', this.onHash);
+    this.route(location.hash, true);
+    this.onKey = e => {
+      if (e.key !== 'Escape') return; const s = this.state;
+      if (s.prefsOpen) return this.closePrefs();
+      if (s.search) return this.closeSearch();
+      if (s.drawer) return this.closeCart();
+      if (s.mega) { this.setState({ mega: false }); return this.shopLinkRef.current?.focus(); }
+      if (s.menu) this.setState({ menu: false });
+    };
+    addEventListener('keydown', this.onKey);
+    this.onDown = e => { if (this.state.mega && this.headWrapRef.current && !this.headWrapRef.current.contains(e.target)) this.setState({ mega: false }); };
+    addEventListener('mousedown', this.onDown);
+    this.barT = setInterval(() => {
+      if (this.state.vw >= 768 || !this.state.bar) return;
+      if (this.reduced) return this.setState(s => ({ barIdx: (s.barIdx + 1) % 3 }));
+      this.setState({ barOp: 0 }); setTimeout(() => this.setState(s => ({ barIdx: (s.barIdx + 1) % 3, barOp: 1 })), 300);
+    }, 4000);
+  }
+  componentDidUpdate(pp, ps) {
+    const n = this.state.items.reduce((a, i) => a + i.qty, 0), tl = this.state.toasts.length;
+    const pn = this._prevCount, ptl = this._prevToasts ?? 0;
+    this._prevCount = n; this._prevToasts = tl;
+    if (pn !== undefined && n !== pn) setTimeout(() => this.bounceCart && this.bounceCart(), this.reduced ? 0 : 380);
+    if (tl > ptl && !this.reduced) {
+      const all = this.rootRef.current?.querySelectorAll('[data-toast]'); const t = all && all[all.length - 1];
+      t && t.animate([{ opacity: 0, transform: 'translateY(12px) scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 260, easing: 'cubic-bezier(.22,1.2,.36,1)' });
+    }
+  }
+  parse(h) {
+    if (!h || h === '#' || h === '#/') return { name: 'home' };
+    if (!h.startsWith('#/')) return { name: 'home', anchor: decodeURIComponent(h.slice(1)) };
+    const parts = h.slice(2).split('/').filter(Boolean), [a, b] = parts;
+    if (parts.length > 2) return { name: '404' };
+    if (a === 'shop') return !b || ['work', 'living', 'storage'].includes(b) ? { name: 'shop', param: b || 'all' } : { name: '404' };
+    if (a === 'product') return this.P.some(p => p.id === b) ? { name: 'product', param: b } : { name: '404' };
+    if (a === 'order' && b) return { name: 'order', param: b };
+    if (a === 'legal') return this.LEGAL[b] ? { name: 'legal', param: b } : { name: '404' };
+    if (!b && ['bundles', 'cart', 'checkout', 'help', 'contact'].includes(a)) return { name: a };
+    return { name: '404' };
+  }
+  titleFor(r) {
+    const T = { home: 'Kerfa · Furniture that clicks', bundles: 'Bundles', cart: 'Your cart', checkout: 'Secure checkout', order: 'Order confirmed', help: 'Help Center', contact: 'Contact', '404': 'Page not found' };
+    let t = T[r.name];
+    if (r.name === 'shop') t = r.param === 'all' ? 'Shop the collection' : r.param[0].toUpperCase() + r.param.slice(1);
+    if (r.name === 'product') t = this.P.find(p => p.id === r.param).name;
+    if (r.name === 'legal') t = this.LEGAL[r.param];
+    return r.name === 'home' ? t : t + ' · Kerfa';
+  }
+  scrollToAnchor(id) { const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 96, behavior: this.reduced ? 'auto' : 'smooth' }); }
+  focusH1() {
+    let n = 0;
+    const f = () => {
+      const v = this.viewRef.current, h1 = v && [...v.querySelectorAll('h1')].find(el => el.offsetParent !== null);
+      if (h1) { h1.tabIndex = -1; h1.style.outline = 'none'; h1.focus({ preventScroll: true }); } else if (n++ < 30) setTimeout(f, 50);
+    };
+    f();
+  }
+  route(hash, first) {
+    const r = this.parse(hash), cur = this.state.route;
+    const close = { drawer: false, mega: false, menu: false, search: false };
+    if (!first && r.name === 'home' && cur.name === 'home') { this.setState(close); if (r.anchor) this.scrollToAnchor(r.anchor); return; }
+    const v = this.viewRef.current;
+    const apply = () => this.setState({ route: r, ...close }, () => {
+      if (v) v.getAnimations().forEach(a => a.cancel()); this.outAnim = null;
+      document.title = this.titleFor(r);
+      if (r.anchor) setTimeout(() => this.scrollToAnchor(r.anchor), 40); else window.scrollTo({ top: 0, behavior: 'instant' });
+      if (!first && !this.reduced && v) v.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 200, easing: 'ease-out' });
+      if (!first) this.focusH1();
+      if (r.name === 'home') { const f = this.fwdRef.current; if (f && f.paused && !this.reduced && !this.state.playing) f.play().catch(() => {}); }
+      else this.fwdRef.current?.pause();
+    });
+    if (first || this.reduced || !v) return apply();
+    this.outAnim = v.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(8px)' }], { duration: 120, easing: 'ease-in', fill: 'forwards' });
+    clearTimeout(this.routeT); this.routeT = setTimeout(apply, 120);
+  }
+  go(h) { if (location.hash === h) this.route(h); else location.hash = h; }
+  qmap(items) { const q = {}; items.forEach(i => { q[i.id] = (q[i.id] || 0) + i.qty; }); return q; }
+  disc(q) {
+    const rem = { ...q }, out = [], order = [...this.B].sort((a, b) => (b.old - b.price) - (a.old - a.price));
+    for (;;) { const b = order.find(x => x.items.every(id => (rem[id] || 0) > 0)); if (!b) break; b.items.forEach(id => rem[id]--); out.push(b); }
+    return out;
+  }
+  totals(items, promo, method = 'standard') {
+    const r2 = n => Math.round(n * 100) / 100;
+    const sub = items.reduce((a, i) => a + this.P.find(p => p.id === i.id).price * i.qty, 0);
+    const applied = this.disc(this.qmap(items));
+    const bundles = this.B.map(b => { const c = applied.filter(x => x === b).length; return c ? { id: b.id, name: b.name, count: c, save: (b.old - b.price) * c } : null; }).filter(Boolean);
+    const bundleDisc = bundles.reduce((a, b) => a + b.save, 0);
+    const promoDisc = promo ? r2((sub - bundleDisc) * 0.1) : 0;
+    const merch = r2(sub - bundleDisc - promoDisc);
+    const shipping = method === 'express' && merch < 800 ? 49 : 0, tax = r2(merch * 0.08);
+    return { sub, bundles, bundleDisc, promoDisc, merch, shipping, tax, total: r2(merch + shipping), grand: r2(merch + shipping + tax), count: items.reduce((a, i) => a + i.qty, 0), freeExpress: merch >= 800, toFree: Math.max(0, r2(800 - merch)), pct: Math.min(1, merch / 800) };
+  }
+  suggest(items) {
+    if (!items.length) return null;
+    const q = this.qmap(items), sum = l => l.reduce((a, b) => a + b.old - b.price, 0), base = sum(this.disc(q));
+    let best = null;
+    this.P.forEach(p => { const d = sum(this.disc({ ...q, [p.id]: (q[p.id] || 0) + 1 })) - base; if (d > 0 && (!best || d > best.save)) best = { id: p.id, name: p.name, save: d }; });
+    return best;
+  }
+  toast(msg) {
+    const id = Math.random().toString(36).slice(2);
+    this.setState(s => ({ toasts: [...s.toasts.slice(-2), { id, msg }] }));
+    setTimeout(() => this.setState(s => ({ toasts: s.toasts.filter(t => t.id !== id) })), 3000);
+  }
+  setItems(items) {
+    const before = this.totals(this.state.items, null).bundleDisc, after = this.totals(items, null).bundleDisc;
+    this.setState({ items }); this.save('cart', items);
+    if (after > before) this.toast('Bundle unlocked: you save ' + this.money(after - before));
+  }
+  addItem(id, qty = 1, src, open) {
+    const items = this.state.items.map(i => ({ ...i })), it = items.find(i => i.id === id);
+    if (it) it.qty = Math.min(10, it.qty + qty); else items.push({ id, qty: Math.min(10, qty) });
+    this.fly(src, id); this.toast('Added to cart'); this.setItems(items);
+    if (open) setTimeout(() => this.openCart(), this.reduced ? 0 : 250);
+  }
+  addBundle(bid, src) {
+    const b = this.B.find(x => x.id === bid), items = this.state.items.map(i => ({ ...i }));
+    b.items.forEach(id => { const it = items.find(i => i.id === id); if (it) it.qty = Math.min(10, it.qty + 1); else items.push({ id, qty: 1 }); });
+    this.fly(src, b.items[0]); this.setItems(items);
+    setTimeout(() => this.openCart(), this.reduced ? 0 : 250);
+  }
+  setQty(id, q) { this.setItems(this.state.items.map(i => (i.id === id ? { ...i, qty: Math.max(1, Math.min(10, q)) } : i))); }
+  removeItem(id) { this.setItems(this.state.items.filter(i => i.id !== id)); }
+  applyPromo(code) { if ((code || '').trim().toUpperCase() !== 'CLICK10') return false; this.setState({ promo: 'CLICK10' }); this.save('promo', 'CLICK10'); this.toast('Code applied'); return true; }
+  removePromo() { this.setState({ promo: null }); this.save('promo', null); }
+  placeOrder(info) {
+    const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', id = 'KRF-' + Array.from({ length: 6 }, () => A[Math.floor(Math.random() * A.length)]).join('');
+    const order = { id, date: Date.now(), ...info };
+    this.setState({ order, items: [], promo: null }); this.save('order', order); this.save('cart', []); this.save('promo', null);
+    return id;
+  }
+  fly(src, id) {
+    const target = this.cartBtnRef.current; if (this.reduced || !target || !src || !src.getBoundingClientRect) return;
+    const host = (src.closest && src.closest('[data-fly]')) || src, img = (host.querySelector && host.querySelector('img')) || (src.tagName === 'IMG' ? src : null);
+    const a = (img || src).getBoundingClientRect(), b = target.getBoundingClientRect(), w = 72, hh = 90;
+    const el = document.createElement('img'); el.src = './assets/' + id + '-card.png'; el.alt = '';
+    Object.assign(el.style, { position: 'fixed', left: '0', top: '0', width: w + 'px', height: hh + 'px', objectFit: 'cover', borderRadius: '12px', zIndex: '140', pointerEvents: 'none', boxShadow: '0 12px 24px -12px rgba(43,42,40,.45)' });
+    document.body.appendChild(el);
+    const x0 = a.left + a.width / 2 - w / 2, y0 = a.top + a.height / 2 - hh / 2, x1 = b.left + b.width / 2 - w / 2, y1 = b.top + b.height / 2 - hh / 2;
+    const mx = (x0 + x1) / 2, my = Math.min(y0, y1) - 120;
+    el.animate([{ transform: `translate(${x0}px,${y0}px) scale(1)` }, { transform: `translate(${mx}px,${my}px) scale(.7)`, offset: 0.5 }, { transform: `translate(${x1}px,${y1}px) scale(.2)`, opacity: 0.5 }], { duration: 400, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' }); setTimeout(() => el.remove(), 420);
+  }
+  focusables(el) { return el ? [...el.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])')].filter(x => x.offsetParent !== null || x === document.activeElement) : []; }
+  trap(e, el) {
+    if (e.key !== 'Tab') return; const f = this.focusables(el); if (!f.length) return;
+    const a = f[0], z = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
+    else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+  }
+  openCart() {
+    if (!this.state.drawer) this.lastFocus = document.activeElement;
+    this.setState({ drawer: true, mega: false, search: false, menu: false }, () => setTimeout(() => this.focusables(this.drawerRef.current)[0]?.focus(), 80));
+  }
+  closeCart() { if (!this.state.drawer) return; this.setState({ drawer: false }); const f = this.lastFocus; if (f && f.isConnected) f.focus({ preventScroll: true }); }
+  openSearch() { this.lastFocus = document.activeElement; this.setState({ search: true, q: '', mega: false }, () => setTimeout(() => this.searchInputRef.current?.focus(), 30)); }
+  closeSearch() { this.setState({ search: false, q: '' }); this.searchRef.current?.querySelector('button')?.focus(); }
+  openPrefs() { this.lastFocus = document.activeElement; this.setState({ prefsOpen: true, drawer: false }, () => setTimeout(() => this.focusables(this.prefsRef.current)[0]?.focus(), 30)); }
+  closePrefs() { this.setState({ prefsOpen: false }); const f = this.lastFocus; if (f && f.isConnected) f.focus(); }
+  setConsent(prefs) { const c = { prefs, date: Date.now() }; this.setState({ consent: c, prefs, prefsOpen: false }); this.save('consent', c); }
+
+  setFilter(f) {
+    if (f === this.state.filter) return;
+    const root = this.rootRef.current;
+    const match = (id, flt) => flt === 'All' || this.P.find(p => p.id === id).cat === flt;
+    if (this.reduced) return this.setState({ filter: f });
+    const cards = [...root.querySelectorAll('[data-card]')];
+    const old = this.state.filter;
+    const leaving = cards.filter(c => match(c.dataset.card, old) && !match(c.dataset.card, f));
+    const staying = cards.filter(c => match(c.dataset.card, old) && match(c.dataset.card, f));
+    const entering = cards.filter(c => !match(c.dataset.card, old) && match(c.dataset.card, f));
+    leaving.forEach(c => c.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.94)' }], { duration: 220, easing: 'ease', fill: 'forwards' }));
+    setTimeout(() => {
+      const first = new Map(staying.map(c => [c, c.getBoundingClientRect()]));
+      this.setState({ filter: f }, () => {
+        leaving.forEach(c => c.getAnimations().forEach(a => a.cancel()));
+        staying.forEach(c => {
+          const a = first.get(c), b = c.getBoundingClientRect();
+          const dx = a.left - b.left, dy = a.top - b.top;
+          if (dx || dy) c.animate([{ transform: `translate(${dx}px,${dy}px)` }, { transform: 'none' }], { duration: 450, easing: 'cubic-bezier(.22,1,.36,1)' });
+        });
+        entering.forEach((c, i) => {
+          c.dataset.revealed = '1'; c.style.opacity = '';
+          c.animate([{ opacity: 0, transform: 'scale(.94)' }, { opacity: 1, transform: 'none' }], { duration: 450, delay: 120 + i * 60, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'backwards' });
+        });
+      });
+    }, 220);
+  }
+
+  dropRoom() {
+    if (this.reduced) return;
+    this.rootRef.current.querySelectorAll('[data-room-item]').forEach((el, i) => {
+      el.animate([{ transform: 'translateY(-40px)', opacity: 0 }, { transform: 'translateY(4px)', opacity: 1, offset: 0.7 }, { transform: 'none', opacity: 1 }],
+        { duration: 520, delay: i * 120, easing: 'ease-out', fill: 'backwards' });
+    });
+  }
+  selectBundle(id, focus) {
+    const root = this.rootRef.current;
+    if (focus) root.querySelector(`[data-bundle="${id}"]`)?.focus();
+    if (id === this.state.bundle) return;
+    const from = this.state.shownTotal, to = this.B.find(b => b.id === id).price;
+    this.setState({ bundle: id, roomIdx: 0 }, () => {
+      this.dropRoom();
+      if (this.reduced) return this.setState({ shownTotal: to });
+      const t0 = performance.now();
+      const step = now => { const p = Math.min(1, (now - t0) / 600), e = 1 - Math.pow(1 - p, 3); this.setState({ shownTotal: Math.round(from + (to - from) * e) }); if (p < 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+      root.querySelector('[data-savepill]')?.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.12)' }, { transform: 'scale(1)' }], { duration: 500, easing: 'cubic-bezier(.22,1.2,.36,1)' });
+    });
+  }
+
+  chromeVals(isMobile) {
+    const s = this.state, r = s.route, t = this.totals(s.items, s.promo), money = n => this.money(n), co = r.name === 'checkout';
+    const kerfa = {
+      P: this.P, B: this.B, byId: id => this.P.find(p => p.id === id), money, vw: s.vw, reduced: !!this.reduced,
+      items: s.items, t, totals: m => this.totals(s.items, s.promo, m), suggest: this.suggest(s.items), promo: s.promo, lastOrder: s.order,
+      addItem: (id, q, el, open) => this.addItem(id, q, el, open), addBundle: (b, el) => this.addBundle(b, el), setQty: (id, q) => this.setQty(id, q), remove: id => this.removeItem(id),
+      applyPromo: c => this.applyPromo(c), removePromo: () => this.removePromo(), go: h => this.go(h), openCart: () => this.openCart(), closeCart: () => this.closeCart(),
+      toast: m => this.toast(m), placeOrder: i => this.placeOrder(i), openCookiePrefs: () => this.openPrefs()
+    };
+    const q = s.q.trim().toLowerCase();
+    const results = this.P.filter(p => !q || [p.name, p.cat, p.desc].join(' ').toLowerCase().includes(q)).map(p => ({ href: '#/product/' + p.id, img: `./assets/${p.id}-card.png`, name: p.name, cat: p.cat, price: money(p.price) }));
+    const msgs = ['Free shipping in the US', '100 night trial', '10 year warranty'];
+    const cnt = c => this.P.filter(p => p.cat === c).length;
+    const news = s.news.trim();
+    const sw = (key, label, desc, on, disabled) => ({ lid: 'ck-' + key, label, desc, on: on ? 'true' : 'false', disabled, bg: on ? '#2B2A28' : '#CFC6B8', x: on ? '22px' : '0', op: disabled ? 0.55 : 1, cursor: disabled ? 'not-allowed' : 'pointer', toggle: () => !disabled && this.setState(st => ({ prefs: { ...st.prefs, [key]: !st.prefs[key] } })) });
+    return {
+      kerfa, cart: t.count, routeParam: r.param, homeDisplay: r.name === 'home' ? 'block' : 'none',
+      rShop: r.name === 'shop', rProduct: r.name === 'product', rBundles: r.name === 'bundles', rCart: r.name === 'cart', rCheckout: co, rOrder: r.name === 'order',
+      rHelp: r.name === 'help', rContact: r.name === 'contact', rLegal: r.name === 'legal', r404: r.name === '404',
+      isCheckout: co, notCheckout: !co, showBar: s.bar && !co, barText: isMobile ? msgs[s.barIdx] : msgs.join(' · '), barOp: s.barOp,
+      closeBar: () => this.setState({ bar: false }), navTop: s.bar && !co && !s.scrolled ? '56px' : '16px',
+      skipToContent: e => { e.preventDefault(); this.focusH1(); },
+      megaOpenS: s.mega ? 'true' : 'false', megaRot: s.mega ? '180deg' : '0deg', megaOp: s.mega ? 1 : 0, megaY: s.mega || this.reduced ? '0' : '8px', megaVis: s.mega ? 'visible' : 'hidden', megaDelay: s.mega ? '0s' : '.2s',
+      megaEnter: () => { clearTimeout(this.megaT); if (!this.state.mega) this.setState({ mega: true }); },
+      megaLeave: () => { clearTimeout(this.megaT); this.megaT = setTimeout(() => this.setState({ mega: false }), 150); },
+      megaClose: () => { clearTimeout(this.megaT); if (this.state.mega) this.setState({ mega: false }); },
+      megaBlur: e => { const n = e.relatedTarget, m = this.megaRef.current; if (!n || !((m && m.contains(n)) || n === this.shopLinkRef.current)) this.setState({ mega: false }); },
+      shopKey: e => { if (e.key === 'ArrowDown') { e.preventDefault(); this.setState({ mega: true }, () => setTimeout(() => this.megaRef.current?.querySelector('a')?.focus(), 20)); } },
+      megaCats: [{ label: 'Work', href: '#/shop/work', count: cnt('Work') }, { label: 'Living', href: '#/shop/living', count: cnt('Living') }, { label: 'Storage', href: '#/shop/storage', count: cnt('Storage') }, { label: 'All products', href: '#/shop', count: this.P.length }],
+      menuKey: e => this.trap(e, this.menuRef.current), mobShopS: s.mobShop ? 'true' : 'false', mobShopRot: s.mobShop ? '45deg' : '0deg', mobShopRows: s.mobShop ? '1fr' : '0fr', mobShopVis: s.mobShop ? 'visible' : 'hidden',
+      toggleMobShop: () => this.setState({ mobShop: !s.mobShop }),
+      openCart: () => this.openCart(), closeCart: () => this.closeCart(), drawerKey: e => this.trap(e, this.drawerRef.current),
+      drawerVis: s.drawer ? 'visible' : 'hidden', drawerDelay: s.drawer ? '0s' : '.3s', drawerOp: s.drawer ? 1 : 0, drawerX: s.drawer ? '0' : '100%', drawerHidden: s.drawer ? undefined : 'true',
+      searchOpenS: s.search ? 'true' : 'false', searchW: s.search ? (isMobile ? '132px' : s.vw >= 1180 ? '220px' : '150px') : '0px', showNavCta: !isMobile && !(s.search && s.vw < 1180), searchPad: s.search ? '16px' : '0', searchOp: s.search ? 1 : 0, searchBorder: s.search ? '#DDD6CB' : 'transparent',
+      searchTab: s.search ? 0 : -1, searchHidden: s.search ? undefined : 'true', searchBtnLabel: s.search ? 'Close search' : 'Search products',
+      resultsOpen: s.search && !!q, resultsOpenS: s.search && q ? 'true' : 'false',
+      toggleSearch: () => (s.search ? this.closeSearch() : this.openSearch()),
+      searchBlur: e => { const n = e.relatedTarget, w = this.searchRef.current; if (!n || !(w && w.contains(n))) setTimeout(() => { if (this.state.search && !(w && w.contains(document.activeElement))) this.setState({ search: false, q: '' }); }, 120); },
+      q: s.q, setQ: e => this.setState({ q: e.target.value }), results, noResults: !results.length,
+      searchEnter: e => { if (e.key === 'Enter' && q && results[0]) { e.preventDefault(); this.setState({ search: false, q: '' }); this.go(results[0].href); } },
+      showCookie: s.consent === null && !s.prefsOpen, prefsOpen: s.prefsOpen,
+      acceptCookies: () => this.setConsent({ analytics: true, marketing: true }), rejectCookies: () => this.setConsent({ analytics: false, marketing: false }),
+      openPrefs: () => this.openPrefs(), closePrefs: () => this.closePrefs(), prefsKey: e => this.trap(e, this.prefsRef.current), savePrefs: () => { this.setConsent(this.state.prefs); this.closePrefs(); },
+      cookieRows: [sw('essential', 'Essential', 'Keep your cart and checkout working. Always on.', true, true), sw('analytics', 'Analytics', 'Anonymous data on which pages help.', s.prefs.analytics, false), sw('marketing', 'Marketing', 'Measure whether our ads work.', s.prefs.marketing, false)],
+      news: s.news, setNews: e => this.setState({ news: e.target.value, newsErr: '' }), newsDone: s.newsDone, newsForm: !s.newsDone,
+      hasNewsErr: !!s.newsErr, newsErr: s.newsErr, newsInvalid: s.newsErr ? 'true' : undefined, newsErrRef: s.newsErr ? 'ft-email-err' : undefined, newsBorder: s.newsErr ? '#B3412F' : '#DDD6CB',
+      subscribe: e => { e.preventDefault(); if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(news)) this.setState({ newsDone: true, newsErr: '' }); else { this.setState({ newsErr: news ? 'Enter a valid email, like name@example.com.' : 'Enter your email.' }); document.getElementById('ft-email')?.focus(); } },
+      toasts: s.toasts,
+      viewRef: this.viewRef, headWrapRef: this.headWrapRef, megaRef: this.megaRef, shopLinkRef: this.shopLinkRef, cartBtnRef: this.cartBtnRef, drawerRef: this.drawerRef,
+      searchRef: this.searchRef, searchInputRef: this.searchInputRef, prefsRef: this.prefsRef, menuRef: this.menuRef
+    };
+  }
+  renderVals() {
+    const s = this.state, isMobile = s.vw < 768;
+    const money = n => '$' + n.toLocaleString('en-US');
+    const products = this.P.map((p, i) => {
+      const show = s.filter === 'All' || p.cat === s.filter;
+      const hov = s.hover === p.id;
+      return {
+        ...p, img: `./assets/${p.id}-card.png`, exp: `./assets/${p.id}-exploded.png`, altExp: p.name + ', exploded view of its parts',
+        aria: `${p.name}, ${money(p.price)}`, priceText: money(p.price), display: show ? 'block' : 'none',
+        expOp: hov ? 1 : 0, scale: hov ? 1.02 : 1,
+        pillY: hov || s.touch ? '0' : '64px', pillOp: hov || s.touch ? 1 : 0,
+        enter: () => this.setState({ hover: p.id }),
+        leave: () => this.setState(st => (st.hover === p.id ? { hover: null } : null)),
+        add: e => { e.stopPropagation(); this.addItem(p.id, 1, e.currentTarget, true); },
+        open: () => this.go('#/product/' + p.id), key: e => { if (e.key === 'Enter' && e.target === e.currentTarget) this.go('#/product/' + p.id); }
+      };
+    });
+    const filters = ['All', 'Work', 'Living', 'Storage'].map(l => ({
+      label: l, pressed: s.filter === l, bg: s.filter === l ? '#2B2A28' : 'transparent', color: s.filter === l ? '#fff' : '#2B2A28',
+      border: s.filter === l ? '#2B2A28' : '#DDD6CB', onClick: () => this.setFilter(l)
+    }));
+    const sel = this.B.find(b => b.id === s.bundle);
+    const bundles = this.B.map((b, i) => ({
+      ...b, itemsText: b.label, oldText: money(b.old), priceText: money(b.price),
+      checked: b.id === s.bundle, tabIndex: b.id === s.bundle ? 0 : -1, border: b.id === s.bundle ? '#2B2A28' : '#DDD6CB', dot: b.id === s.bundle ? 1 : 0,
+      onClick: () => this.selectBundle(b.id),
+      onKeyDown: e => {
+        const k = e.key; let j = null;
+        if (k === 'ArrowDown' || k === 'ArrowRight') j = (i + 1) % this.B.length;
+        if (k === 'ArrowUp' || k === 'ArrowLeft') j = (i - 1 + this.B.length) % this.B.length;
+        if (k === ' ' || k === 'Enter') { e.preventDefault(); return this.selectBundle(b.id); }
+        if (j !== null) { e.preventDefault(); this.selectBundle(this.B[j].id, true); }
+      }
+    }));
+    const n = sel.items.length;
+    const ri = (s.roomIdx || 0) % n;
+    const scrollRoom = dir => this.setState({ roomIdx: (ri + dir + n) % n });
+    const roomDots = sel.items.map((_, i) => ({ onClick: () => this.setState({ roomIdx: i }), label: `Show product ${i + 1}`, current: i === ri ? 'true' : undefined, w: i === ri ? '24px' : '8px', bg: i === ri ? '#2B2A28' : '#CFC6B8' }));
+    const roomShift = `-${ri * 100}%`;
+    const roomItems = sel.items.map(id => { const p = this.P.find(x => x.id === id); return { img: `./assets/${id}-card.png`, name: p.name, price: money(p.price) }; }).map((r, i) => ({ ...r, hidden: i === ri ? undefined : 'true' }));
+        const e = s.statP;
+    const reviews = [...this.R, ...this.R, ...this.R, ...this.R].map((r, i) => ({ ...r, hidden: i >= 3 && !s.reduced ? 'true' : (i >= 3 ? 'true' : undefined) }));
+    return {
+      rootRef: this.rootRef, fwdRef: this.fwdRef, revRef: this.revRef, marqRef: this.marqRef, marqWrapRef: this.marqWrapRef,
+      navBg: s.blur ? 'rgba(255,255,255,.7)' : '#fff', ...this.chromeVals(isMobile),
+      isMobile, notMobile: !isMobile, menuOpen: s.menu,
+      openMenu: () => this.setState({ menu: true }), closeMenu: () => this.setState({ menu: false }),
+      heroAspect: isMobile ? '4 / 5' : '16 / 9',
+      heroOverlap: s.vw >= 1040, heroInset: s.vw >= 1040 ? 'clamp(20px,3.5vw,48px)' : '0', heroColPad: s.vw >= 1040 ? 'calc(1.96 * clamp(44px,7vw,104px) + 40px)' : '8px', heroPull: s.vw >= 1040 ? 'calc(-1.96 * clamp(44px,7vw,104px) + 8px)' : '48px',
+      fwdOpacity: s.active === 'fwd' ? 1 : 0, revOpacity: s.active === 'rev' ? 1 : 0,
+      showHeroImg: s.reduced && !s.userPlayed,
+      watch: () => this.watch(), playing: s.playing, watchOpacity: s.playing ? 0.5 : 1, watchLabel: s.playing ? 'Assembling…' : 'Watch it assemble',
+      filters, products, bundles, roomItems, roomTrackRef: this.roomTrackRef, roomCaption: `In this bundle · ${ri + 1} of ${n}`, roomShift, roomDots, roomPrev: () => scrollRoom(-1), roomNext: () => scrollRoom(1),
+      totalText: money(s.shownTotal), oldTotalText: money(sel.old), saveText: `You save ${money(sel.old - sel.price)}`,
+      buildBundle: e => this.addBundle(sel.id, e.currentTarget),
+      statTime: Math.round(9 * e) + ' min', statTools: String(Math.round(12 * (1 - e))), statRating: (4.8 * e).toFixed(1) + '/5',
+      stars: [1, 2, 3, 4, 5], reviews: s.reduced ? reviews.slice(0, 3) : reviews,
+      marqOverflow: s.reduced ? 'auto' : 'hidden',
+      pauseMarq: () => { this.paused = true; }, resumeMarq: () => { this.paused = false; },
+      faqs: this.F.map(([q, a], i) => ({
+        q, a, open: s.faq === i, rows: s.faq === i ? '1fr' : '0fr', op: s.faq === i ? 1 : 0, rot: s.faq === i ? '45deg' : '0deg',
+        btnId: 'faq-b' + i, panelId: 'faq-p' + i, toggle: () => this.setState({ faq: s.faq === i ? -1 : i })
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>
